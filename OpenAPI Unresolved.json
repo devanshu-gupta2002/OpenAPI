@@ -1,8 +1,10 @@
+
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Google Calendar API",
-    "description": "The Google Calendar API lets you integrate your app with Google Calendar, \ncreating new ways for users to engage with their calendars.\n",
+    "description": "The Google Calendar API lets you integrate your app with Google Calendar, creating new ways for users to engage with their calendars.",
+    "version": "v3",
     "contact": {
       "name": "Google Calendar API",
       "url": "https://developers.google.com/calendar"
@@ -10,8 +12,7 @@
     "license": {
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "v3"
+    }
   },
   "servers": [
     {
@@ -27,37 +28,319 @@
       "ApiKey": []
     }
   ],
-  "tags": [
-    {
-      "name": "Calendars",
-      "description": "Operations for managing calendars"
-    },
-    {
-      "name": "Events",
-      "description": "Operations for managing calendar events"
-    },
-    {
-      "name": "Freebusy",
-      "description": "Operations for querying free/busy information"
-    }
-  ],
   "paths": {
+    "/calendars/{calendarId}/acl": {
+      "get": {
+        "summary": "List access control rules",
+        "operationId": "listAcl",
+        "tags": ["ACL"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CalendarId"
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of entries returned on one result page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 100
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "description": "Token for pagination",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "description": "Whether to include deleted ACLs in the result",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "syncToken",
+            "in": "query",
+            "description": "Token for incremental synchronization",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of ACL rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Acl"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an access control rule",
+        "operationId": "createAcl",
+        "tags": ["ACL"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CalendarId"
+          },
+          {
+            "name": "sendNotifications",
+            "in": "query",
+            "description": "Whether to send notifications about the calendar sharing change",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AclRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ACL rule created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AclRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/calendars/{calendarId}/acl/{ruleId}": {
+      "get": {
+        "summary": "Get an access control rule",
+        "operationId": "getAcl",
+        "tags": ["ACL"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CalendarId"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "description": "ACL rule identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ACL rule details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AclRule"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an access control rule",
+        "operationId": "updateAcl",
+        "tags": ["ACL"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CalendarId"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "description": "ACL rule identifier",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sendNotifications",
+            "in": "query",
+            "description": "Whether to send notifications about the calendar sharing change",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AclRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ACL rule updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AclRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an access control rule",
+        "operationId": "deleteAcl",
+        "tags": ["ACL"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CalendarId"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "description": "ACL rule identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "ACL rule deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/users/me/calendarList": {
+      "get": {
+        "summary": "List calendars",
+        "operationId": "listCalendars",
+        "tags": ["Calendar List"],
+        "parameters": [
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of entries returned",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 250,
+              "default": 100
+            }
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "description": "Token for pagination",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "description": "Whether to include deleted calendar list entries",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "showHidden",
+            "in": "query",
+            "description": "Whether to show hidden entries",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of calendars",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
     "/calendars": {
       "post": {
-        "tags": [
-          "Calendars"
-        ],
         "summary": "Create a calendar",
         "operationId": "createCalendar",
+        "tags": ["Calendars"],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Calendar"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -81,21 +364,12 @@
     },
     "/calendars/{calendarId}": {
       "get": {
-        "tags": [
-          "Calendars"
-        ],
         "summary": "Get calendar details",
         "operationId": "getCalendar",
+        "tags": ["Calendars"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           }
         ],
         "responses": {
@@ -109,41 +383,32 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       },
       "put": {
-        "tags": [
-          "Calendars"
-        ],
         "summary": "Update a calendar",
         "operationId": "updateCalendar",
+        "tags": ["Calendars"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Calendar"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -168,21 +433,12 @@
         }
       },
       "delete": {
-        "tags": [
-          "Calendars"
-        ],
         "summary": "Delete a calendar",
         "operationId": "deleteCalendar",
+        "tags": ["Calendars"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           }
         ],
         "responses": {
@@ -198,100 +454,23 @@
         }
       }
     },
-    "/users/me/calendarList": {
-      "get": {
-        "tags": [
-          "Calendars"
-        ],
-        "summary": "List calendars",
-        "operationId": "listCalendars",
-        "parameters": [
-          {
-            "name": "maxResults",
-            "in": "query",
-            "description": "Maximum number of entries returned",
-            "required": false,
-            "schema": {
-              "maximum": 250,
-              "minimum": 1,
-              "type": "integer",
-              "default": 100
-            }
-          },
-          {
-            "name": "pageToken",
-            "in": "query",
-            "description": "Token for pagination",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "showDeleted",
-            "in": "query",
-            "description": "Whether to include deleted calendar list entries",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "showHidden",
-            "in": "query",
-            "description": "Whether to show hidden entries",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of calendars",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/inline_response_200"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          }
-        }
-      }
-    },
     "/calendars/{calendarId}/events": {
       "get": {
-        "tags": [
-          "Events"
-        ],
         "summary": "List events",
         "operationId": "listEvents",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           },
           {
             "name": "maxResults",
             "in": "query",
             "description": "Maximum number of events returned",
-            "required": false,
             "schema": {
-              "maximum": 2500,
-              "minimum": 1,
               "type": "integer",
+              "minimum": 1,
+              "maximum": 2500,
               "default": 250
             }
           },
@@ -299,7 +478,6 @@
             "name": "pageToken",
             "in": "query",
             "description": "Token for pagination",
-            "required": false,
             "schema": {
               "type": "string"
             }
@@ -308,7 +486,6 @@
             "name": "timeMin",
             "in": "query",
             "description": "Lower bound for event start time (RFC3339)",
-            "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -318,7 +495,6 @@
             "name": "timeMax",
             "in": "query",
             "description": "Upper bound for event start time (RFC3339)",
-            "required": false,
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -328,7 +504,6 @@
             "name": "q",
             "in": "query",
             "description": "Free text search terms",
-            "required": false,
             "schema": {
               "type": "string"
             }
@@ -337,20 +512,15 @@
             "name": "orderBy",
             "in": "query",
             "description": "Order of events returned",
-            "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "startTime",
-                "updated"
-              ]
+              "enum": ["startTime", "updated"]
             }
           },
           {
             "name": "singleEvents",
             "in": "query",
             "description": "Whether to expand recurring events",
-            "required": false,
             "schema": {
               "type": "boolean",
               "default": false
@@ -363,7 +533,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/inline_response_200_1"
+                  "$ref": "#/components/schemas/Events"
                 }
               }
             }
@@ -377,32 +547,23 @@
         }
       },
       "post": {
-        "tags": [
-          "Events"
-        ],
         "summary": "Create an event",
         "operationId": "createEvent",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Event"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -426,30 +587,15 @@
     },
     "/calendars/{calendarId}/events/{eventId}": {
       "get": {
-        "tags": [
-          "Events"
-        ],
         "summary": "Get event details",
         "operationId": "getEvent",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           },
           {
-            "name": "eventId",
-            "in": "path",
-            "description": "Event identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/EventId"
           }
         ],
         "responses": {
@@ -472,41 +618,26 @@
         }
       },
       "put": {
-        "tags": [
-          "Events"
-        ],
         "summary": "Update an event",
         "operationId": "updateEvent",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           },
           {
-            "name": "eventId",
-            "in": "path",
-            "description": "Event identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/EventId"
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Event"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -531,30 +662,15 @@
         }
       },
       "delete": {
-        "tags": [
-          "Events"
-        ],
         "summary": "Delete an event",
         "operationId": "deleteEvent",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           },
           {
-            "name": "eventId",
-            "in": "path",
-            "description": "Event identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "$ref": "#/components/parameters/EventId"
           }
         ],
         "responses": {
@@ -572,28 +688,19 @@
     },
     "/calendars/{calendarId}/events/quickAdd": {
       "post": {
-        "tags": [
-          "Events"
-        ],
         "summary": "Quick add event",
-        "description": "Creates an event based on a simple text string",
         "operationId": "quickAddEvent",
+        "description": "Creates an event based on a simple text string",
+        "tags": ["Events"],
         "parameters": [
           {
-            "name": "calendarId",
-            "in": "path",
-            "description": "Calendar identifier",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "primary"
-            }
+            "$ref": "#/components/parameters/CalendarId"
           },
           {
             "name": "text",
             "in": "query",
-            "description": "The text describing the event",
             "required": true,
+            "description": "The text describing the event",
             "schema": {
               "type": "string",
               "example": "Appointment at Somewhere on June 3rd 10am-10:25am"
@@ -622,20 +729,18 @@
     },
     "/freeBusy": {
       "post": {
-        "tags": [
-          "Freebusy"
-        ],
         "summary": "Query free/busy information",
         "operationId": "queryFreeBusy",
+        "tags": ["Freebusy"],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/freeBusy_body"
+                "$ref": "#/components/schemas/FreeBusyRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -643,7 +748,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/inline_response_200_2"
+                  "$ref": "#/components/schemas/FreeBusyResponse"
                 }
               }
             }
@@ -656,7 +761,135 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/auth",
+            "tokenUrl": "https://oauth2.googleapis.com/token",
+            "scopes": {
+              "https://www.googleapis.com/auth/calendar.readonly": "Read-only access to calendars",
+              "https://www.googleapis.com/auth/calendar": "Full access to calendars",
+              "https://www.googleapis.com/auth/calendar.events": "Access to events"
+            }
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "key"
+      }
+    },
+    "parameters": {
+      "CalendarId": {
+        "name": "calendarId",
+        "in": "path",
+        "required": true,
+        "description": "Calendar identifier",
+        "schema": {
+          "type": "string",
+          "example": "primary"
+        }
+      },
+      "EventId": {
+        "name": "eventId",
+        "in": "path",
+        "required": true,
+        "description": "Event identifier",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
     "schemas": {
+      "Acl": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "example": "calendar#acl"
+          },
+          "etag": {
+            "type": "string"
+          },
+          "nextPageToken": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AclRule"
+            }
+          }
+        }
+      },
+      "AclRule": {
+        "type": "object",
+        "required": ["role", "scope"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "example": "calendar#aclRule"
+          },
+          "etag": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["none", "freeBusyReader", "reader", "writer", "owner"]
+          },
+          "scope": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["default", "user", "group", "domain"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "Calendar": {
         "type": "object",
         "properties": {
@@ -686,9 +919,27 @@
           "timeZone": {
             "type": "string",
             "description": "Time zone of the calendar"
+          }
+        }
+      },
+      "CalendarList": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "example": "calendar#calendarList"
           },
-          "conferenceProperties": {
-            "$ref": "#/components/schemas/Calendar_conferenceProperties"
+          "etag": {
+            "type": "string"
+          },
+          "nextPageToken": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarListEntry"
+            }
           }
         }
       },
@@ -737,12 +988,7 @@
           },
           "accessRole": {
             "type": "string",
-            "enum": [
-              "freeBusyReader",
-              "reader",
-              "writer",
-              "owner"
-            ]
+            "enum": ["freeBusyReader", "reader", "writer", "owner"]
           },
           "defaultReminders": {
             "type": "array",
@@ -770,11 +1016,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "confirmed",
-              "tentative",
-              "cancelled"
-            ]
+            "enum": ["confirmed", "tentative", "cancelled"]
           },
           "htmlLink": {
             "type": "string"
@@ -817,10 +1059,10 @@
           },
           "recurrence": {
             "type": "array",
-            "description": "RRULE, RDATE, EXRULE and EXDATE lines",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "RRULE, RDATE, EXRULE and EXDATE lines"
           },
           "recurringEventId": {
             "type": "string"
@@ -830,19 +1072,11 @@
           },
           "transparency": {
             "type": "string",
-            "enum": [
-              "opaque",
-              "transparent"
-            ]
+            "enum": ["opaque", "transparent"]
           },
           "visibility": {
             "type": "string",
-            "enum": [
-              "default",
-              "public",
-              "private",
-              "confidential"
-            ]
+            "enum": ["default", "public", "private", "confidential"]
           },
           "iCalUID": {
             "type": "string"
@@ -860,7 +1094,21 @@
             "type": "boolean"
           },
           "extendedProperties": {
-            "$ref": "#/components/schemas/Event_extendedProperties"
+            "type": "object",
+            "properties": {
+              "private": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "shared": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "hangoutLink": {
             "type": "string"
@@ -890,13 +1138,60 @@
             "type": "boolean"
           },
           "reminders": {
-            "$ref": "#/components/schemas/Event_reminders"
+            "type": "object",
+            "properties": {
+              "useDefault": {
+                "type": "boolean"
+              },
+              "overrides": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EventReminder"
+                }
+              }
+            }
           },
           "source": {
-            "$ref": "#/components/schemas/Event_source"
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Events": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "example": "calendar#events"
           },
-          "workingLocationProperties": {
-            "type": "object"
+          "etag": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nextPageToken": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            }
           }
         }
       },
@@ -905,13 +1200,13 @@
         "properties": {
           "date": {
             "type": "string",
-            "description": "Date for all-day events (YYYY-MM-DD)",
-            "format": "date"
+            "format": "date",
+            "description": "Date for all-day events (YYYY-MM-DD)"
           },
           "dateTime": {
             "type": "string",
-            "description": "Combined date-time value (RFC3339)",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Combined date-time value (RFC3339)"
           },
           "timeZone": {
             "type": "string",
@@ -955,12 +1250,7 @@
               },
               "responseStatus": {
                 "type": "string",
-                "enum": [
-                  "needsAction",
-                  "declined",
-                  "tentative",
-                  "accepted"
-                ]
+                "enum": ["needsAction", "declined", "tentative", "accepted"]
               },
               "comment": {
                 "type": "string"
@@ -977,10 +1267,7 @@
         "properties": {
           "method": {
             "type": "string",
-            "enum": [
-              "email",
-              "popup"
-            ]
+            "enum": ["email", "popup"]
           },
           "minutes": {
             "type": "integer",
@@ -997,11 +1284,53 @@
           "entryPoints": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ConferenceData_entryPoints"
+              "type": "object",
+              "properties": {
+                "entryPointType": {
+                  "type": "string"
+                },
+                "uri": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "pin": {
+                  "type": "string"
+                },
+                "accessCode": {
+                  "type": "string"
+                },
+                "meetingCode": {
+                  "type": "string"
+                },
+                "passcode": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
             }
           },
           "conferenceSolution": {
-            "$ref": "#/components/schemas/ConferenceData_conferenceSolution"
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  }
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "iconUri": {
+                "type": "string"
+              }
+            }
           },
           "conferenceId": {
             "type": "string"
@@ -1014,92 +1343,19 @@
           }
         }
       },
-      "Error": {
+      "FreeBusyRequest": {
         "type": "object",
-        "properties": {
-          "error": {
-            "$ref": "#/components/schemas/Error_error"
-          }
-        }
-      },
-      "inline_response_200": {
-        "type": "object",
-        "properties": {
-          "kind": {
-            "type": "string",
-            "example": "calendar#calendarList"
-          },
-          "etag": {
-            "type": "string"
-          },
-          "nextPageToken": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CalendarListEntry"
-            }
-          }
-        }
-      },
-      "inline_response_200_1": {
-        "type": "object",
-        "properties": {
-          "kind": {
-            "type": "string",
-            "example": "calendar#events"
-          },
-          "etag": {
-            "type": "string"
-          },
-          "summary": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "updated": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "nextPageToken": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Event"
-            }
-          }
-        }
-      },
-      "freeBusy_items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Calendar identifier"
-          }
-        }
-      },
-      "freeBusy_body": {
-        "required": [
-          "items",
-          "timeMax",
-          "timeMin"
-        ],
-        "type": "object",
+        "required": ["timeMin", "timeMax", "items"],
         "properties": {
           "timeMin": {
             "type": "string",
-            "description": "Start of the interval",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Start of the interval"
           },
           "timeMax": {
             "type": "string",
-            "description": "End of the interval",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "End of the interval"
           },
           "timeZone": {
             "type": "string",
@@ -1116,12 +1372,18 @@
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/freeBusy_items"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Calendar identifier"
+                }
+              }
             }
           }
         }
       },
-      "inline_response_200_2": {
+      "FreeBusyResponse": {
         "type": "object",
         "properties": {
           "kind": {
@@ -1139,267 +1401,104 @@
           "calendars": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/components/schemas/inline_response_200_2_calendars"
+              "type": "object",
+              "properties": {
+                "busy": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "end": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                },
+                "errors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "domain": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
       },
-      "Calendar_conferenceProperties": {
+      "Error": {
         "type": "object",
         "properties": {
-          "allowedConferenceSolutionTypes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Event_extendedProperties": {
-        "type": "object",
-        "properties": {
-          "private": {
+          "error": {
             "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "shared": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Event_reminders": {
-        "type": "object",
-        "properties": {
-          "useDefault": {
-            "type": "boolean"
-          },
-          "overrides": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EventReminder"
-            }
-          }
-        }
-      },
-      "Event_source": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          }
-        }
-      },
-      "ConferenceData_entryPoints": {
-        "type": "object",
-        "properties": {
-          "entryPointType": {
-            "type": "string"
-          },
-          "uri": {
-            "type": "string"
-          },
-          "label": {
-            "type": "string"
-          },
-          "pin": {
-            "type": "string"
-          },
-          "accessCode": {
-            "type": "string"
-          },
-          "meetingCode": {
-            "type": "string"
-          },
-          "passcode": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
-      "ConferenceData_conferenceSolution_key": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        }
-      },
-      "ConferenceData_conferenceSolution": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "$ref": "#/components/schemas/ConferenceData_conferenceSolution_key"
-          },
-          "name": {
-            "type": "string"
-          },
-          "iconUri": {
-            "type": "string"
-          }
-        }
-      },
-      "Error_error_errors": {
-        "type": "object",
-        "properties": {
-          "domain": {
-            "type": "string"
-          },
-          "reason": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "locationType": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          }
-        }
-      },
-      "Error_error": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer"
-          },
-          "message": {
-            "type": "string"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Error_error_errors"
+            "properties": {
+              "code": {
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              },
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "locationType": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
             }
           }
         }
-      },
-      "inline_response_200_2_busy": {
-        "type": "object",
-        "properties": {
-          "start": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "end": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "inline_response_200_2_errors": {
-        "type": "object",
-        "properties": {
-          "domain": {
-            "type": "string"
-          },
-          "reason": {
-            "type": "string"
-          }
-        }
-      },
-      "inline_response_200_2_calendars": {
-        "type": "object",
-        "properties": {
-          "busy": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/inline_response_200_2_busy"
-            }
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/inline_response_200_2_errors"
-            }
-          }
-        }
-      }
-    },
-    "responses": {
-      "BadRequest": {
-        "description": "Bad request",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Error"
-            }
-          }
-        }
-      }
-    },
-    "parameters": {
-      "CalendarId": {
-        "name": "calendarId",
-        "in": "path",
-        "description": "Calendar identifier",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "example": "primary"
-        }
-      },
-      "EventId": {
-        "name": "eventId",
-        "in": "path",
-        "description": "Event identifier",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
-    },
-    "securitySchemes": {
-      "OAuth2": {
-        "type": "oauth2",
-        "flows": {
-          "authorizationCode": {
-            "authorizationUrl": "https://accounts.google.com/o/oauth2/auth",
-            "tokenUrl": "https://oauth2.googleapis.com/token",
-            "scopes": {
-              "https://www.googleapis.com/auth/calendar.readonly": "Read-only access to calendars",
-              "https://www.googleapis.com/auth/calendar": "Full access to calendars",
-              "https://www.googleapis.com/auth/calendar.events": "Access to events"
-            }
-          }
-        }
-      },
-      "ApiKey": {
-        "type": "apiKey",
-        "name": "key",
-        "in": "query"
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "ACL",
+      "description": "Operations for managing access control lists"
+    },
+    {
+      "name": "Calendar List",
+      "description": "Operations for managing user's calendar list"
+    },
+    {
+      "name": "Calendars",
+      "description": "Operations for managing calendars"
+    },
+    {
+      "name": "Events",
+      "description": "Operations for managing calendar events"
+    },
+    {
+      "name": "Freebusy",
+      "description": "Operations for querying free/busy information"
+    }
+  ]
 }
