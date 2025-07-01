@@ -1,0 +1,17 @@
+{
+  "name": "openapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dereference": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^14.0.2",
+    "flatted": "^3.3.3",
+    "yaml": "^2.8.0"
+  }
+}
