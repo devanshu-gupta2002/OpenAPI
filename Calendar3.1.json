@@ -264,15 +264,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "allOf": [
-                  {
                     "$ref": "#/components/schemas/microsoft.graph.calendarPermission"
-                  },
-                  {
-                    "description": "New navigation property"
-                  }
-                ],
-                "contentMediaType": "application/json"
               }
             }
           },
