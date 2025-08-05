@@ -1,0 +1,1079 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Xero Reports API",
+    "version": "1.0.0",
+    "description": "Xero Accounting API - Reports Endpoints",
+    "contact": {
+      "name": "Xero Platform Team",
+      "email": "api@xero.com",
+      "url": "https://developer.xero.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.xero.com/api.xro/2.0",
+      "description": "Xero Accounting API"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/Reports/TenNinetyNine": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieve reports for 1099",
+        "operationId": "getReportTenNinetyNine",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportYear",
+            "in": "query",
+            "description": "The year of the 1099 report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Reports",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reports"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read", "accounting.reports.tenninetynine.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/AgedPayablesByContact": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for aged payables by contact",
+        "operationId": "getReportAgedPayablesByContact",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": true,
+            "description": "Unique identifier for a Contact",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date of the Aged Payables By Contact report",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "filter by the from date of the report e.g. 2021-02-01",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "filter by the to date of the report e.g. 2021-02-28",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/AgedReceivablesByContact": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for aged receivables by contact",
+        "operationId": "getReportAgedReceivablesByContact",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": true,
+            "description": "Unique identifier for a Contact",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date of the Aged Receivables By Contact report",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "filter by the from date of the report e.g. 2021-02-01",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "filter by the to date of the report e.g. 2021-02-28",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/BalanceSheet": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for balancesheet",
+        "operationId": "getReportBalanceSheet",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date of the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "periods",
+            "in": "query",
+            "description": "The number of periods for the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timeframe",
+            "in": "query",
+            "description": "The period size to compare to (MONTH, QUARTER, YEAR)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["MONTH", "QUARTER", "YEAR"]
+            }
+          },
+          {
+            "name": "trackingOptionID1",
+            "in": "query",
+            "description": "The tracking option 1 for the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "trackingOptionID2",
+            "in": "query",
+            "description": "The tracking option 2 for the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "standardLayout",
+            "in": "query",
+            "description": "The standard layout boolean for the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "paymentsOnly",
+            "in": "query",
+            "description": "return a cash basis for the Balance Sheet report",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/BankSummary": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for bank summary",
+        "operationId": "getReportBankSummary",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "filter by the from date of the report e.g. 2021-02-01",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "filter by the to date of the report e.g. 2021-02-28",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/{ReportID}": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves a specific report using a unique ReportID",
+        "operationId": "getReportFromId",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ReportID",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier for a Report",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/BudgetSummary": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for budget summary",
+        "operationId": "getReportBudgetSummary",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date for the Bank Summary report e.g. 2018-03-31",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "periods",
+            "in": "query",
+            "description": "The number of periods to compare (integer between 1 and 12)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timeframe",
+            "in": "query",
+            "description": "The period size to compare to (1=month, 3=quarter, 12=year)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success- return a Report with Rows object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/ExecutiveSummary": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for executive summary",
+        "operationId": "getReportExecutiveSummary",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date for the Bank Summary report e.g. 2018-03-31",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves a list of the organistaions unique reports that require a uuid to fetch",
+        "operationId": "getReportsList",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/ProfitAndLoss": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for profit and loss",
+        "operationId": "getReportProfitAndLoss",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "filter by the from date of the report e.g. 2021-02-01",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "filter by the to date of the report e.g. 2021-02-28",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "periods",
+            "in": "query",
+            "description": "The number of periods to compare (integer between 1 and 12)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "timeframe",
+            "in": "query",
+            "description": "The period size to compare to (MONTH, QUARTER, YEAR)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["MONTH", "QUARTER", "YEAR"]
+            }
+          },
+          {
+            "name": "trackingCategoryID",
+            "in": "query",
+            "description": "The trackingCategory 1 for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "trackingCategoryID2",
+            "in": "query",
+            "description": "The trackingCategory 2 for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "trackingOptionID",
+            "in": "query",
+            "description": "The tracking option 1 for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "trackingOptionID2",
+            "in": "query",
+            "description": "The tracking option 2 for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "standardLayout",
+            "in": "query",
+            "description": "Return the standard layout for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "paymentsOnly",
+            "in": "query",
+            "description": "Return cash only basis for the ProfitAndLoss report",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    },
+    "/Reports/TrialBalance": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Retrieves report for trial balance",
+        "operationId": "getReportTrialBalance",
+        "parameters": [
+          {
+            "name": "xero-tenant-id",
+            "in": "header",
+            "required": true,
+            "description": "Xero identifier for Tenant",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "The date for the Trial Balance report e.g. 2018-03-31",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "paymentsOnly",
+            "in": "query",
+            "description": "Return cash only basis for the Trial Balance report",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type ReportWithRows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportWithRows"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": ["accounting.reports.read"]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "For more information",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.xero.com/identity/connect/authorize",
+            "tokenUrl": "https://identity.xero.com/connect/token",
+            "scopes": {
+              "accounting.reports.read": "Grant read-only access to accounting reports",
+              "accounting.reports.tenninetynine.read": "Grant read-only access to 1099 reports"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Reports": {
+        "type": "object",
+        "properties": {
+          "Reports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Report"
+            }
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "ReportName": {
+            "type": "string",
+            "description": "Name of the report"
+          },
+          "ReportType": {
+            "type": "string",
+            "description": "Type of report",
+            "enum": ["AgedPayablesByContact"]
+          },
+          "ReportTitle": {
+            "type": "string",
+            "description": "Title of the report"
+          },
+          "ReportDate": {
+            "type": "string",
+            "description": "Date of report"
+          },
+          "UpdatedDateUTC": {
+            "type": "string",
+            "description": "Updated Date UTC format",
+            "readOnly": true
+          },
+          "Contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TenNinetyNineContact"
+            }
+          }
+        }
+      },
+      "TenNinetyNineContact": {
+        "type": "object",
+        "properties": {
+          "Box1": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 1 on 1099 Form"
+          },
+          "Box2": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 2 on 1099 Form"
+          },
+          "Box3": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 3 on 1099 Form"
+          },
+          "Box4": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 4 on 1099 Form"
+          },
+          "Box5": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 5 on 1099 Form"
+          },
+          "Box6": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 6 on 1099 Form"
+          },
+          "Box7": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 7 on 1099 Form"
+          },
+          "Box8": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 8 on 1099 Form"
+          },
+          "Box9": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 9 on 1099 Form"
+          },
+          "Box10": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 10 on 1099 Form"
+          },
+          "Box11": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 11 on 1099 Form"
+          },
+          "Box13": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 13 on 1099 Form"
+          },
+          "Box14": {
+            "type": "number",
+            "format": "double",
+            "description": "Box 14 on 1099 Form"
+          },
+          "Name": {
+            "type": "string",
+            "description": "Contact name on 1099 Form"
+          },
+          "FederalTaxIDType": {
+            "type": "string",
+            "description": "Contact Fed Tax ID type"
+          },
+          "City": {
+            "type": "string",
+            "description": "Contact city on 1099 Form"
+          },
+          "Zip": {
+            "type": "string",
+            "description": "Contact zip on 1099 Form"
+          },
+          "State": {
+            "type": "string",
+            "description": "Contact State on 1099 Form"
+          },
+          "Email": {
+            "type": "string",
+            "description": "Contact email on 1099 Form"
+          },
+          "StreetAddress": {
+            "type": "string",
+            "description": "Contact address on 1099 Form"
+          },
+          "TaxID": {
+            "type": "string",
+            "description": "Contact tax id on 1099 Form"
+          },
+          "ContactId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Contact contact id"
+          },
+          "LegalName": {
+            "type": "string",
+            "description": "Contact legal name"
+          },
+          "BusinessName": {
+            "type": "string",
+            "description": "Contact business name"
+          },
+          "FederalTaxClassification": {
+            "type": "string",
+            "description": "Contact federal tax classification",
+            "enum": [
+              "SOLE_PROPRIETOR",
+              "PARTNERSHIP",
+              "TRUST_OR_ESTATE",
+              "NONPROFIT",
+              "C_CORP",
+              "S_CORP",
+              "OTHER"
+            ]
+          }
+        }
+      },
+      "ReportWithRows": {
+        "type": "object",
+        "properties": {
+          "Reports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportWithRow"
+            }
+          }
+        }
+      },
+      "ReportWithRow": {
+        "type": "object",
+        "properties": {
+          "ReportID": {
+            "type": "string",
+            "description": "ID of the Report"
+          },
+          "ReportName": {
+            "type": "string",
+            "description": "Name of the report"
+          },
+          "ReportTitle": {
+            "type": "string",
+            "description": "Title of the report"
+          },
+          "ReportType": {
+            "type": "string",
+            "description": "The type of report (BalanceSheet,ProfitLoss, etc)"
+          },
+          "ReportTitles": {
+            "type": "array",
+            "description": "Report titles array (3 to 4 strings with the report name, orgnisation name and time frame of report)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ReportDate": {
+            "type": "string",
+            "description": "Date of report"
+          },
+          "Rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportRows"
+            }
+          },
+          "UpdatedDateUTC": {
+            "type": "string",
+            "description": "Updated Date",
+            "readOnly": true
+          },
+          "Fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportFields"
+            }
+          }
+        }
+      },
+      "ReportRows": {
+        "type": "object",
+        "properties": {
+          "RowType": {
+            "$ref": "#/components/schemas/RowType"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "Cells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportCell"
+            }
+          },
+          "Rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportRow"
+            }
+          }
+        }
+      },
+      "RowType": {
+        "type": "string",
+        "enum": ["Header", "Section", "Row", "SummaryRow"]
+      },
+      "ReportRow": {
+        "type": "object",
+        "properties": {
+          "RowType": {
+            "$ref": "#/components/schemas/RowType"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "Cells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportCell"
+            }
+          }
+        }
+      },
+      "ReportCell": {
+        "type": "object",
+        "properties": {
+          "Value": {
+            "type": "string"
+          },
+          "Attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportAttribute"
+            }
+          }
+        }
+      },
+      "ReportAttribute": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "ReportFields": {
+        "type": "object",
+        "properties": {
+          "FieldID": {
+            "type": "string"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
