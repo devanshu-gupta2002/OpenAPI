@@ -1,0 +1,1839 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Xero Accounting API - Contacts",
+    "version": "1.0.0",
+    "description": "Xero Accounting API endpoints for managing contacts",
+    "contact": {
+      "name": "Xero Platform Team",
+      "email": "api@xero.com",
+      "url": "https://developer.xero.com"
+    },
+    "termsOfService": "https://developer.xero.com/xero-developer-platform-terms-conditions/"
+  },
+  "servers": [
+    {
+      "url": "https://api.xero.com/api.xro/2.0",
+      "description": "Xero Accounting API"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/Contacts": {
+      "get": {
+        "operationId": "getContacts",
+        "summary": "Retrieves all contacts in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ifModifiedSince"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "IDs",
+            "description": "Filter by a comma separated list of ContactIDs. Allows you to retrieve a specific set of contacts in a single call.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "e.g. page=1 - Up to 100 contacts will be returned in a single API call.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeArchived",
+            "description": "e.g. includeArchived=true - Contacts with a status of ARCHIVED will be included in the response",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/summaryOnly"
+          },
+          {
+            "in": "query",
+            "name": "searchTerm",
+            "description": "Search parameter that performs a case-insensitive text search across the Name, FirstName, LastName, ContactNumber and EmailAddress fields.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with 0 to N Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "createContacts",
+        "summary": "Creates multiple contacts (bulk) in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Contacts with an array of Contact objects to create in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contacts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with newly created Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "updateOrCreateContacts",
+        "summary": "Updates or creates one or more contacts in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contacts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with newly created Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactNumber}": {
+      "get": {
+        "operationId": "getContactByContactNumber",
+        "summary": "Retrieves a specific contact by contact number in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "required": true,
+            "in": "path",
+            "name": "ContactNumber",
+            "description": "This field is read only on the Xero contact screen, used to identify contacts in external systems (max length = 50).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with a unique Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}": {
+      "get": {
+        "operationId": "getContact",
+        "summary": "Retrieves a specific contacts in a Xero organisation using a unique contact Id",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with a unique Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "updateContact",
+        "summary": "Updates a specific contact in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "requestBody": {
+          "description": "an array of Contacts containing single Contact object with properties to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contacts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array with an updated Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}/Attachments": {
+      "get": {
+        "operationId": "getContactAttachments",
+        "summary": "Retrieves attachments for a specific contact in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array with 0 to N Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}/Attachments/{AttachmentID}": {
+      "get": {
+        "operationId": "getContactAttachmentById",
+        "summary": "Retrieves a specific attachment from a specific contact using a unique attachment Id",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          },
+          {
+            "$ref": "#/components/parameters/AttachmentID"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Contact as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}/Attachments/{FileName}": {
+      "get": {
+        "operationId": "getContactAttachmentByFileName",
+        "summary": "Retrieves a specific attachment from a specific contact by file name",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Contact as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "updateContactAttachmentByFileName",
+        "summary": "",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array with an updated Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      },
+      "put": {
+        "operationId": "createContactAttachmentByFileName",
+        "summary": "",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array with an newly created Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}/CISSettings": {
+      "get": {
+        "operationId": "getContactCISSettings",
+        "summary": "Retrieves CIS settings for a specific contact in a Xero organisation",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.settings", "accounting.settings.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type CISSettings for a specific Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CISSettings"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/{ContactID}/History": {
+      "get": {
+        "operationId": "getContactHistory",
+        "summary": "Retrieves history records for a specific contact",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRetrieved"
+          }
+        }
+      },
+      "put": {
+        "operationId": "createContactHistory",
+        "summary": "Creates a new history record for a specific contact",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/historyRecords"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRecordCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/ContactGroups": {
+      "get": {
+        "operationId": "getContactGroups",
+        "summary": "Retrieves the contact Id and name of each contact group",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contact Groups array of Contact Group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactGroups"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "createContactGroup",
+        "summary": "Creates a contact group",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "description": "ContactGroups with an array of names in request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactGroups"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contact Groups array of newly created Contact Group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactGroups"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ContactGroups/{ContactGroupID}": {
+      "get": {
+        "operationId": "getContactGroup",
+        "summary": "Retrieves a specific contact group by using a unique contact group Id",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts", "accounting.contacts.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactGroupID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contact Groups array with a specific Contact Group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactGroups"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "updateContactGroup",
+        "summary": "Updates a specific contact group",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactGroupID"
+          }
+        ],
+        "requestBody": {
+          "description": "an array of Contact groups with Name of specific group to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactGroups"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contact Groups array of updated Contact Group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactGroups"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/ContactGroups/{ContactGroupID}/Contacts": {
+      "put": {
+        "operationId": "createContactGroupContacts",
+        "summary": "Creates contacts to a specific contact group",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ContactGroupID"
+          }
+        ],
+        "requestBody": {
+          "description": "Contacts with array of contacts specifying the ContactID to be added to ContactGroup in body of request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contacts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Contacts array of added Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contacts"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteContactGroupContacts",
+        "summary": "Deletes all contacts from a specific contact group",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactGroupID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success - return response 204 no content"
+          }
+        }
+      }
+    },
+    "/ContactGroups/{ContactGroupID}/Contacts/{ContactID}": {
+      "delete": {
+        "operationId": "deleteContactGroupContact",
+        "summary": "Deletes a specific contact from a contact group using a unique contact Id",
+        "tags": ["Accounting"],
+        "security": [
+          {
+            "OAuth2": ["accounting.contacts"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ContactGroupID"
+          },
+          {
+            "$ref": "#/components/parameters/ContactID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success - return response 204 no content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "For more information",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.xero.com/identity/connect/authorize",
+            "tokenUrl": "https://identity.xero.com/connect/token",
+            "scopes": {
+              "email": "Grant read-only access to your email",
+              "openid": "Grant read-only access to your open id",
+              "profile": "your profile information",
+              "accounting.attachments": "Grant read-write access to attachments",
+              "accounting.attachments.read": "Grant read-only access to attachments",
+              "accounting.contacts": "Grant read-write access to contacts and contact groups",
+              "accounting.contacts.read": "Grant read-only access to contacts and contact groups",
+              "accounting.settings": "Grant read-write access to organisation and account settings",
+              "accounting.settings.read": "Grant read-only access to organisation and account settings"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "requiredHeader": {
+        "in": "header",
+        "name": "xero-tenant-id",
+        "description": "Xero identifier for Tenant",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "summarizeErrors": {
+        "in": "query",
+        "name": "summarizeErrors",
+        "description": "If false return 200 OK and mix of successfully created objects and any with validation errors",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "ifModifiedSince": {
+        "in": "header",
+        "name": "If-Modified-Since",
+        "description": "Only records created or modified since this timestamp will be returned",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "idempotencyKey": {
+        "in": "header",
+        "name": "Idempotency-Key",
+        "description": "This allows you to safely retry requests without the risk of duplicate processing. 128 character max.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "summaryOnly": {
+        "in": "query",
+        "name": "summaryOnly",
+        "description": "Use summaryOnly=true in GET Contacts and Invoices endpoint to retrieve a smaller version of the response object. This returns only lightweight fields, excluding computation-heavy fields from the response, making the API calls quick and efficient.",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "pageSize": {
+        "in": "query",
+        "name": "pageSize",
+        "description": "Number of records to retrieve per page",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "AttachmentID": {
+        "required": true,
+        "in": "path",
+        "name": "AttachmentID",
+        "description": "Unique identifier for Attachment object",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "ContentType": {
+        "required": true,
+        "in": "header",
+        "name": "contentType",
+        "description": "The mime type of the attachment file you are retrieving i.e image/jpg, application/pdf",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FileName": {
+        "required": true,
+        "in": "path",
+        "name": "FileName",
+        "description": "Name of the attachment",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ContactID": {
+        "required": true,
+        "in": "path",
+        "name": "ContactID",
+        "description": "Unique identifier for a Contact",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "ContactGroupID": {
+        "required": true,
+        "in": "path",
+        "name": "ContactGroupID",
+        "description": "Unique identifier for a Contact Group",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "requestBodies": {
+      "historyRecords": {
+        "required": true,
+        "description": "HistoryRecords containing an array of HistoryRecord objects in body of request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400Error": {
+        "description": "A failed request due to validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "HistoryRecordCreated": {
+        "description": "Success - return response of type HistoryRecords array of HistoryRecord objects",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      },
+      "HistoryRetrieved": {
+        "description": "Success - return response of HistoryRecords array of 0 to N HistoryRecord",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Contacts": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            }
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "ContactID": {
+            "description": "Xero identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "MergedToContactID": {
+            "description": "ID for the destination of a merged contact. Only returned when using paging or when fetching a contact by ContactId or ContactNumber.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactNumber": {
+            "description": "This can be updated via the API only i.e. This field is read only on the Xero contact screen, used to identify contacts in external systems (max length = 50). If the Contact Number is used, this is displayed as Contact Code in the Contacts UI in Xero.",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "AccountNumber": {
+            "description": "A user defined account number. This can be updated via the API and the Xero UI (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "ContactStatus": {
+            "description": "Current status of a contact – see contact status types",
+            "type": "string",
+            "enum": ["ACTIVE", "ARCHIVED", "GDPRREQUEST"]
+          },
+          "Name": {
+            "description": "Full name of contact/organisation (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "FirstName": {
+            "description": "First name of contact person (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "LastName": {
+            "description": "Last name of contact person (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "CompanyNumber": {
+            "description": "Company registration number (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "EmailAddress": {
+            "description": "Email address of contact person (umlauts not supported) (max length  = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "ContactPersons": {
+            "description": "See contact persons",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPerson"
+            }
+          },
+          "BankAccountDetails": {
+            "description": "Bank account number of contact",
+            "type": "string"
+          },
+          "TaxNumber": {
+            "description": "Tax number of contact – this is also known as the ABN (Australia), GST Number (New Zealand), VAT Number (UK) or Tax ID Number (US and global) in the Xero UI depending on which regionalized version of Xero you are using (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "AccountsReceivableTaxType": {
+            "description": "The tax type from TaxRates",
+            "type": "string"
+          },
+          "AccountsPayableTaxType": {
+            "description": "The tax type from TaxRates",
+            "type": "string"
+          },
+          "Addresses": {
+            "description": "Store certain address types for a contact – see address types",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          },
+          "Phones": {
+            "description": "Store certain phone types for a contact – see phone types",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Phone"
+            }
+          },
+          "IsSupplier": {
+            "description": "true or false – Boolean that describes if a contact that has any AP  invoices entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts payable invoice is generated against this contact.",
+            "type": "boolean"
+          },
+          "IsCustomer": {
+            "description": "true or false – Boolean that describes if a contact has any AR invoices entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts receivable invoice is generated against this contact.",
+            "type": "boolean"
+          },
+          "SalesDefaultLineAmountType": {
+            "description": "The default sales line amount type for a contact. Only available when summaryOnly parameter or paging is used, or when fetch by ContactId or ContactNumber.",
+            "type": "string",
+            "enum": ["INCLUSIVE", "EXCLUSIVE", "NONE"]
+          },
+          "PurchasesDefaultLineAmountType": {
+            "description": "The default purchases line amount type for a contact Only available when summaryOnly parameter or paging is used, or when fetch by ContactId or ContactNumber.",
+            "type": "string",
+            "enum": ["INCLUSIVE", "EXCLUSIVE", "NONE"]
+          },
+          "DefaultCurrency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "XeroNetworkKey": {
+            "description": "Store XeroNetworkKey for contacts.",
+            "type": "string"
+          },
+          "SalesDefaultAccountCode": {
+            "description": "The default sales account code for contacts",
+            "type": "string"
+          },
+          "PurchasesDefaultAccountCode": {
+            "description": "The default purchases account code for contacts",
+            "type": "string"
+          },
+          "SalesTrackingCategories": {
+            "description": "The default sales tracking categories for contacts",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesTrackingCategory"
+            }
+          },
+          "PurchasesTrackingCategories": {
+            "description": "The default purchases tracking categories for contacts",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesTrackingCategory"
+            }
+          },
+          "TrackingCategoryName": {
+            "description": "The name of the Tracking Category assigned to the contact under SalesTrackingCategories and PurchasesTrackingCategories",
+            "type": "string"
+          },
+          "TrackingCategoryOption": {
+            "description": "The name of the Tracking Option assigned to the contact under SalesTrackingCategories and PurchasesTrackingCategories",
+            "type": "string"
+          },
+          "PaymentTerms": {
+            "$ref": "#/components/schemas/PaymentTerm"
+          },
+          "UpdatedDateUTC": {
+            "description": "UTC timestamp of last update to contact",
+            "type": "string",
+            "readOnly": true
+          },
+          "ContactGroups": {
+            "description": "Displays which contact groups a contact is included in",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactGroup"
+            }
+          },
+          "Website": {
+            "description": "Website address for contact (read only)",
+            "readOnly": true,
+            "type": "string"
+          },
+          "BrandingTheme": {
+            "$ref": "#/components/schemas/BrandingTheme"
+          },
+          "BatchPayments": {
+            "$ref": "#/components/schemas/BatchPaymentDetails"
+          },
+          "Discount": {
+            "description": "The default discount rate for the contact (read only)",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "Balances": {
+            "$ref": "#/components/schemas/Balances"
+          },
+          "Attachments": {
+            "description": "Displays array of attachments from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          },
+          "HasAttachments": {
+            "description": "A boolean to indicate if a contact has an attachment",
+            "type": "boolean",
+            "default": false
+          },
+          "ValidationErrors": {
+            "description": "Displays validation errors returned from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "HasValidationErrors": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          },
+          "StatusAttributeString": {
+            "description": "Status of object",
+            "type": "string"
+          }
+        }
+      },
+      "ContactPerson": {
+        "type": "object",
+        "properties": {
+          "FirstName": {
+            "description": "First name of person",
+            "type": "string"
+          },
+          "LastName": {
+            "description": "Last name of person",
+            "type": "string"
+          },
+          "EmailAddress": {
+            "description": "Email address of person",
+            "type": "string"
+          },
+          "IncludeInEmails": {
+            "description": "boolean to indicate whether contact should be included on emails with invoices etc.",
+            "type": "boolean"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "AddressType": {
+            "description": "define the type of address",
+            "type": "string",
+            "enum": ["POBOX", "STREET"]
+          },
+          "AddressLine1": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine2": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine3": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine4": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "City": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "Region": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "max length = 50",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "Country": {
+            "description": "max length = 50, [A-Z], [a-z] only",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "AttentionTo": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "properties": {
+          "PhoneType": {
+            "type": "string",
+            "enum": ["DEFAULT", "DDI", "MOBILE", "FAX", "OFFICE"]
+          },
+          "PhoneNumber": {
+            "description": "max length = 50",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "PhoneAreaCode": {
+            "description": "max length = 10",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "PhoneCountryCode": {
+            "description": "max length = 20",
+            "maxLength": 20,
+            "type": "string"
+          }
+        }
+      },
+      "SalesTrackingCategory": {
+        "type": "object",
+        "properties": {
+          "TrackingCategoryName": {
+            "description": "The default sales tracking category name for contacts",
+            "type": "string"
+          },
+          "TrackingOptionName": {
+            "description": "The default purchase tracking category name for contacts",
+            "type": "string"
+          }
+        }
+      },
+      "PaymentTerm": {
+        "type": "object",
+        "properties": {
+          "Bills": {
+            "$ref": "#/components/schemas/Bill"
+          },
+          "Sales": {
+            "$ref": "#/components/schemas/Bill"
+          }
+        }
+      },
+      "Bill": {
+        "type": "object",
+        "properties": {
+          "Day": {
+            "description": "Day of Month (0-31)",
+            "type": "integer"
+          },
+          "Type": {
+            "$ref": "#/components/schemas/PaymentTermType"
+          }
+        }
+      },
+      "PaymentTermType": {
+        "type": "string",
+        "enum": [
+          "DAYSAFTERBILLDATE",
+          "DAYSAFTERBILLMONTH",
+          "DAYSAFTERINVOICEDATE",
+          "DAYSAFTERINVOICEMONTH",
+          "OFCURRENTMONTH",
+          "OFFOLLOWINGMONTH"
+        ]
+      },
+      "BrandingTheme": {
+        "type": "object",
+        "properties": {
+          "BrandingThemeID": {
+            "description": "Xero identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "description": "Name of branding theme",
+            "type": "string"
+          },
+          "LogoUrl": {
+            "description": "The location of the image file used as the logo on this branding theme",
+            "type": "string"
+          },
+          "Type": {
+            "description": "Always INVOICE",
+            "type": "string",
+            "enum": ["INVOICE"]
+          },
+          "SortOrder": {
+            "description": "Integer – ranked order of branding theme. The default branding theme has a value of 0",
+            "type": "integer"
+          },
+          "CreatedDateUTC": {
+            "description": "UTC timestamp of creation date of branding theme",
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "BatchPaymentDetails": {
+        "description": "Bank details for use on a batch payment stored with each contact",
+        "type": "object",
+        "properties": {
+          "BankAccountNumber": {
+            "description": "Bank account number for use with Batch Payments",
+            "type": "string"
+          },
+          "BankAccountName": {
+            "description": "Name of bank for use with Batch Payments",
+            "type": "string"
+          },
+          "Details": {
+            "description": "(Non-NZ Only) These details are sent to the org's bank as a reference for the batch payment transaction. They will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement imported into Xero. Maximum field length = 18",
+            "type": "string"
+          },
+          "Code": {
+            "description": "(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.",
+            "type": "string",
+            "maxLength": 12
+          },
+          "Reference": {
+            "description": "(NZ Only) Optional references for the batch payment transaction. It will also show with the batch payment transaction in the bank reconciliation Find & Match screen. Depending on your individual bank, the detail may also show on the bank statement you import into Xero.",
+            "type": "string",
+            "maxLength": 12
+          }
+        }
+      },
+      "Balances": {
+        "type": "object",
+        "description": "The raw AccountsReceivable(sales invoices) and AccountsPayable(bills) outstanding and overdue amounts, not converted to base currency (read only)",
+        "properties": {
+          "AccountsReceivable": {
+            "$ref": "#/components/schemas/AccountsReceivable"
+          },
+          "AccountsPayable": {
+            "$ref": "#/components/schemas/AccountsPayable"
+          }
+        }
+      },
+      "AccountsReceivable": {
+        "type": "object",
+        "properties": {
+          "Outstanding": {
+            "type": "number",
+            "format": "double"
+          },
+          "Overdue": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AccountsPayable": {
+        "type": "object",
+        "properties": {
+          "Outstanding": {
+            "type": "number",
+            "format": "double"
+          },
+          "Overdue": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Attachments": {
+        "type": "object",
+        "properties": {
+          "Attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          }
+        }
+      },
+      "Attachment": {
+        "type": "object",
+        "properties": {
+          "AttachmentID": {
+            "description": "Unique ID for the file",
+            "type": "string",
+            "format": "uuid"
+          },
+          "FileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "Url": {
+            "description": "URL to the file on xero.com",
+            "type": "string"
+          },
+          "MimeType": {
+            "description": "Type of file",
+            "type": "string"
+          },
+          "ContentLength": {
+            "description": "Length of the file content",
+            "type": "integer"
+          },
+          "IncludeOnline": {
+            "description": "Include the file with the online invoice",
+            "type": "boolean"
+          }
+        }
+      },
+      "CISSettings": {
+        "type": "object",
+        "properties": {
+          "CISSettings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CISSetting"
+            }
+          }
+        }
+      },
+      "CISSetting": {
+        "type": "object",
+        "properties": {
+          "CISEnabled": {
+            "description": "Boolean that describes if the contact is a CIS Subcontractor",
+            "type": "boolean"
+          },
+          "Rate": {
+            "description": "CIS Deduction rate for the contact if he is a subcontractor. If the contact is not CISEnabled, then the rate is not returned",
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          }
+        }
+      },
+      "HistoryRecords": {
+        "type": "object",
+        "properties": {
+          "HistoryRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRecord"
+            }
+          }
+        }
+      },
+      "HistoryRecord": {
+        "type": "object",
+        "properties": {
+          "Details": {
+            "description": "details",
+            "type": "string"
+          },
+          "Changes": {
+            "description": "Name of branding theme",
+            "type": "string"
+          },
+          "User": {
+            "description": "has a value of 0",
+            "type": "string"
+          },
+          "DateUTC": {
+            "description": "UTC timestamp of creation date of branding theme",
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "ContactGroups": {
+        "type": "object",
+        "properties": {
+          "ContactGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactGroup"
+            }
+          }
+        }
+      },
+      "ContactGroup": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "description": "The Name of the contact group. Required when creating a new contact  group",
+            "type": "string"
+          },
+          "Status": {
+            "description": "The Status of a contact group. To delete a contact group update the status to DELETED. Only contact groups with a status of ACTIVE are returned on GETs.",
+            "type": "string",
+            "enum": ["ACTIVE", "DELETED"]
+          },
+          "ContactGroupID": {
+            "description": "The Xero identifier for an contact group – specified as a string following the endpoint name. e.g. /297c2dc5-cc47-4afd-8ec8-74990b8761e9",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Contacts": {
+            "description": "The ContactID and Name of Contacts in a contact group. Returned on GETs when the ContactGroupID is supplied in the URL.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactGroupContact"
+            }
+          }
+        }
+      },
+      "ContactGroupContact": {
+        "type": "object",
+        "description": "Simplified Contact object for ContactGroup references",
+        "properties": {
+          "ContactID": {
+            "description": "Xero identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "description": "Full name of contact/organisation",
+            "type": "string"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "pageCount": {
+            "type": "integer"
+          },
+          "itemCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "description": "Validation error message",
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ErrorNumber": {
+            "description": "Exception number",
+            "type": "integer"
+          },
+          "Type": {
+            "description": "Exception type",
+            "type": "string"
+          },
+          "Message": {
+            "description": "Exception message",
+            "type": "string"
+          },
+          "Elements": {
+            "description": "Array of Elements of validation Errors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          }
+        }
+      },
+      "Element": {
+        "type": "object",
+        "properties": {
+          "ValidationErrors": {
+            "description": "Array of Validation Error message",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "BatchPaymentID": {
+            "description": "Unique ID for batch payment object with validation error",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BankTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "InvoiceID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ItemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "PurchaseOrderID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CurrencyCode": {
+        "description": "3 letter alpha code for the currency – see list of currency codes",
+        "type": "string",
+        "enum": [
+          "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+          "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+          "BSD", "BTN", "BWP", "BYN", "BYR", "BZD", "CAD", "CDF", "CHF", "CLF",
+          "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK",
+          "DOP", "DZD", "EEK", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP",
+          "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK",
+          "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
+          "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT",
+          "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL",
+          "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MRU", "MUR", "MVR", "MWK",
+          "MXN", "MXV", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD",
+          "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON",
+          "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP",
+          "SKK", "SLE", "SLL", "SOS", "SRD", "STN", "STD", "SVC", "SYP", "SZL",
+          "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH",
+          "UGX", "USD", "UYU", "UZS", "VEF", "VES", "VND", "VUV", "WST", "XAF",
+          "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZMK", "ZWD"
+        ]
+      }
+    }
+  }
+}
