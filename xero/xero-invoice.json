@@ -1,0 +1,2236 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Xero Accounting API - Invoices",
+    "version": "1.0.0",
+    "description": "Xero Accounting API endpoints for managing invoices",
+    "contact": {
+      "name": "Xero Platform Team",
+      "email": "api@xero.com",
+      "url": "https://developer.xero.com"
+    },
+    "termsOfService": "https://developer.xero.com/xero-developer-platform-terms-conditions/"
+  },
+  "servers": [
+    {
+      "url": "https://api.xero.com/api.xro/2.0",
+      "description": "Xero Accounting API"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/Invoices": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions",
+              "accounting.transactions.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoices",
+        "summary": "Retrieves sales invoices or purchase bills",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ifModifiedSince"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "IDs",
+            "description": "Filter by a comma-separated list of InvoicesIDs.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "InvoiceNumbers",
+            "description": "Filter by a comma-separated list of InvoiceNumbers.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "ContactIDs",
+            "description": "Filter by a comma-separated list of ContactIDs.",
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "Statuses",
+            "description": "Filter by a comma-separated list Statuses. For faster response times we recommend using these explicit parameters instead of passing OR conditions into the Where filter.",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "e.g. page=1 – Up to 100 invoices will be returned in a single API call with line items shown for each invoice",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "includeArchived",
+            "description": "e.g. includeArchived=true - Invoices with a status of ARCHIVED will be included in the response",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "createdByMyApp",
+            "description": "When set to true you'll only retrieve Invoices created by your app",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          },
+          {
+            "$ref": "#/components/parameters/summaryOnly"
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/searchTerm"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Invoices array with all Invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoices"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "createInvoices",
+        "summary": "Creates one or more sales invoices or purchase bills",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Invoices with an array of invoice objects in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Invoices"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Invoices array with newly created Invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoices"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "updateOrCreateInvoices",
+        "summary": "Updates or creates one or more sales invoices or purchase bills",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Invoices"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Invoices array with newly created Invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoices"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions",
+              "accounting.transactions.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoice",
+        "summary": "Retrieves a specific sales invoice or purchase bill using a unique invoice Id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Invoices array with specified Invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoices"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "updateInvoice",
+        "summary": "Updates a specific sales invoices or purchase bills",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Invoices"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Invoices array with updated Invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invoices"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/pdf": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions",
+              "accounting.transactions.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceAsPdf",
+        "summary": "Retrieves invoices or purchase bills as PDF files",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of byte array pdf version of specified Invoices",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/Attachments": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.attachments",
+              "accounting.attachments.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceAttachments",
+        "summary": "Retrieves attachments for a specific invoice or purchase bill",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array of Attachments for specified Invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/Attachments/{AttachmentID}": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.attachments",
+              "accounting.attachments.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceAttachmentById",
+        "summary": "Retrieves a specific attachment from a specific invoices or purchase bills by using a unique attachment Id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/AttachmentID"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Invoice as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/Attachments/{FileName}": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.attachments",
+              "accounting.attachments.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceAttachmentByFileName",
+        "summary": "Retrieves an attachment from a specific invoice or purchase bill by filename",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Invoice as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.attachments"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "updateInvoiceAttachmentByFileName",
+        "summary": "Updates an attachment from a specific invoices or purchase bill by filename",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array with updated Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.attachments"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "createInvoiceAttachmentByFileName",
+        "summary": "Creates an attachment for a specific invoice or purchase bill by filename",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/includeOnline"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array with newly created Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/OnlineInvoice": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions",
+              "accounting.transactions.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getOnlineInvoice",
+        "summary": "Retrieves a URL to an online invoice",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type OnlineInvoice array with one OnlineInvoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnlineInvoices"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/Email": {
+      "post": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "emailInvoice",
+        "summary": "Sends a copy of a specific invoice to related contact via email",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEmpty"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success - return response 204 no content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Invoices/{InvoiceID}/History": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions",
+              "accounting.transactions.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceHistory",
+        "summary": "Retrieves history records for a specific invoice",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRetrieved"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.transactions"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "createInvoiceHistory",
+        "summary": "Creates a history record for a specific invoice",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/InvoiceID"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/historyRecords"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRecordCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/InvoiceReminders/Settings": {
+      "get": {
+        "security": [
+          {
+            "OAuth2": [
+              "accounting.settings",
+              "accounting.settings.read"
+            ]
+          }
+        ],
+        "tags": [
+          "Invoices"
+        ],
+        "operationId": "getInvoiceReminders",
+        "summary": "Retrieves invoice reminder settings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of Invoice Reminders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceReminders"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "For more information",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.xero.com/identity/connect/authorize",
+            "tokenUrl": "https://identity.xero.com/connect/token",
+            "scopes": {
+              "accounting.attachments": "Grant read-write access to attachments",
+              "accounting.attachments.read": "Grant read-only access to attachments",
+              "accounting.transactions": "Grant read-write access to bank transactions, credit notes, invoices, repeating invoices",
+              "accounting.transactions.read": "Grant read-only access to invoices",
+              "accounting.settings": "Grant read-write access to organisation and account settings",
+              "accounting.settings.read": "Grant read-only access to organisation and account settings"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "requiredHeader": {
+        "in": "header",
+        "name": "xero-tenant-id",
+        "description": "Xero identifier for Tenant",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "InvoiceID": {
+        "required": true,
+        "in": "path",
+        "name": "InvoiceID",
+        "description": "Unique identifier for an Invoice",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "AttachmentID": {
+        "required": true,
+        "in": "path",
+        "name": "AttachmentID",
+        "description": "Unique identifier for Attachment object",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "FileName": {
+        "required": true,
+        "in": "path",
+        "name": "FileName",
+        "description": "Name of the attachment",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ContentType": {
+        "required": true,
+        "in": "header",
+        "name": "contentType",
+        "description": "The mime type of the attachment file you are retrieving i.e image/jpg, application/pdf",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "summarizeErrors": {
+        "in": "query",
+        "name": "summarizeErrors",
+        "description": "If false return 200 OK and mix of successfully created objects and any with validation errors",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "unitdp": {
+        "in": "query",
+        "name": "unitdp",
+        "description": "e.g. unitdp=4 – (Unit Decimal Places) You can opt in to use four decimal places for unit amounts",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "ifModifiedSince": {
+        "in": "header",
+        "name": "If-Modified-Since",
+        "description": "Only records created or modified since this timestamp will be returned",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "idempotencyKey": {
+        "in": "header",
+        "name": "Idempotency-Key",
+        "description": "This allows you to safely retry requests without the risk of duplicate processing. 128 character max.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "includeOnline": {
+        "in": "query",
+        "name": "IncludeOnline",
+        "description": "Allows an attachment to be seen by the end customer within their online invoice",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "summaryOnly": {
+        "in": "query",
+        "name": "summaryOnly",
+        "description": "Use summaryOnly=true in GET Contacts and Invoices endpoint to retrieve a smaller version of the response object. This returns only lightweight fields, excluding computation-heavy fields from the response, making the API calls quick and efficient.",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "searchTerm": {
+        "in": "query",
+        "name": "searchTerm",
+        "description": "Search parameter that performs a case-insensitive text search across the fields e.g. InvoiceNumber, Reference.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "pageSize": {
+        "in": "query",
+        "name": "pageSize",
+        "description": "Number of records to retrieve per page",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "requestBodies": {
+      "historyRecords": {
+        "required": true,
+        "description": "HistoryRecords containing an array of HistoryRecord objects in body of request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400Error": {
+        "description": "A failed request due to validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "HistoryRecordCreated": {
+        "description": "Success - return response of type HistoryRecords array of HistoryRecord objects",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      },
+      "HistoryRetrieved": {
+        "description": "Success - return response of HistoryRecords array of 0 to N HistoryRecord",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Invoices": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invoice"
+            }
+          }
+        }
+      },
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "description": "See Invoice Types",
+            "type": "string",
+            "enum": [
+              "ACCPAY",
+              "ACCPAYCREDIT",
+              "APOVERPAYMENT",
+              "APPREPAYMENT",
+              "ACCREC",
+              "ACCRECCREDIT",
+              "AROVERPAYMENT",
+              "ARPREPAYMENT"
+            ]
+          },
+          "Contact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "LineItems": {
+            "description": "See LineItems",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          },
+          "Date": {
+            "description": "Date invoice was issued – YYYY-MM-DD. If the Date element is not specified it will default to the current date based on the timezone setting of the organisation",
+            "type": "string"
+          },
+          "DueDate": {
+            "description": "Date invoice is due – YYYY-MM-DD",
+            "type": "string"
+          },
+          "LineAmountTypes": {
+            "$ref": "#/components/schemas/LineAmountTypes"
+          },
+          "InvoiceNumber": {
+            "description": "ACCREC – Unique alpha numeric code identifying invoice (when missing will auto-generate from your Organisation Invoice Settings) (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "Reference": {
+            "description": "ACCREC only – additional reference number",
+            "type": "string"
+          },
+          "BrandingThemeID": {
+            "description": "See BrandingThemes",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Url": {
+            "description": "URL link to a source document – shown as \"Go to [appName]\" in the Xero app",
+            "type": "string"
+          },
+          "CurrencyCode": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "CurrencyRate": {
+            "description": "The currency rate for a multicurrency invoice. If no rate is specified, the XE.com day rate is used. (max length = [18].[6])",
+            "type": "number",
+            "format": "double"
+          },
+          "Status": {
+            "description": "See Invoice Status Codes",
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMITTED",
+              "DELETED",
+              "AUTHORISED",
+              "PAID",
+              "VOIDED"
+            ]
+          },
+          "SentToContact": {
+            "description": "Boolean to set whether the invoice in the Xero app should be marked as \"sent\". This can be set only on invoices that have been approved",
+            "type": "boolean"
+          },
+          "ExpectedPaymentDate": {
+            "description": "Shown on sales invoices (Accounts Receivable) when this has been set",
+            "type": "string"
+          },
+          "PlannedPaymentDate": {
+            "description": "Shown on bills (Accounts Payable) when this has been set",
+            "type": "string"
+          },
+          "CISDeduction": {
+            "description": "CIS deduction for UK contractors",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "CISRate": {
+            "description": "CIS Deduction rate for the organisation",
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "SubTotal": {
+            "description": "Total of invoice excluding taxes",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "TotalTax": {
+            "description": "Total tax on invoice",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "Total": {
+            "description": "Total of Invoice tax inclusive (i.e. SubTotal + TotalTax). This will be ignored if it doesn't equal the sum of the LineAmounts",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "TotalDiscount": {
+            "description": "Total of discounts applied on the invoice line items",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "InvoiceID": {
+            "description": "Xero generated unique identifier for invoice",
+            "type": "string",
+            "format": "uuid"
+          },
+          "RepeatingInvoiceID": {
+            "description": "Xero generated unique identifier for repeating invoices",
+            "type": "string",
+            "format": "uuid"
+          },
+          "HasAttachments": {
+            "description": "boolean to indicate if an invoice has an attachment",
+            "readOnly": true,
+            "type": "boolean",
+            "default": false
+          },
+          "IsDiscounted": {
+            "description": "boolean to indicate if an invoice has a discount",
+            "readOnly": true,
+            "type": "boolean"
+          },
+          "Payments": {
+            "description": "See Payments",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          },
+          "Prepayments": {
+            "description": "See Prepayments",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrepaymentSummary"
+            }
+          },
+          "Overpayments": {
+            "description": "See Overpayments",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OverpaymentSummary"
+            }
+          },
+          "AmountDue": {
+            "description": "Amount remaining to be paid on invoice",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "AmountPaid": {
+            "description": "Sum of payments received for invoice",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "FullyPaidOnDate": {
+            "description": "The date the invoice was fully paid. Only returned on fully paid invoices",
+            "readOnly": true,
+            "type": "string"
+          },
+          "AmountCredited": {
+            "description": "Sum of all credit notes, over-payments and pre-payments applied to invoice",
+            "readOnly": true,
+            "type": "number",
+            "format": "double"
+          },
+          "UpdatedDateUTC": {
+            "description": "Last modified date UTC format",
+            "type": "string",
+            "readOnly": true
+          },
+          "CreditNotes": {
+            "description": "Details of credit notes that have been applied to an invoice",
+            "readOnly": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreditNoteSummary"
+            }
+          },
+          "Attachments": {
+            "description": "Displays array of attachments from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          },
+          "HasErrors": {
+            "description": "A boolean to indicate if a invoice has an validation errors",
+            "type": "boolean",
+            "default": false
+          },
+          "StatusAttributeString": {
+            "description": "A string to indicate if a invoice status",
+            "type": "string"
+          },
+          "ValidationErrors": {
+            "description": "Displays array of validation error messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "InvoiceAddresses": {
+            "description": "An array of addresses used to auto calculate sales tax",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceAddress"
+            }
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "ContactID": {
+            "description": "Xero identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactNumber": {
+            "description": "This can be updated via the API only i.e. This field is read only on the Xero contact screen, used to identify contacts in external systems (max length = 50). If the Contact Number is used, this is displayed as Contact Code in the Contacts UI in Xero.",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "AccountNumber": {
+            "description": "A user defined account number. This can be updated via the API and the Xero UI (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "ContactStatus": {
+            "description": "Current status of a contact – see contact status types",
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED",
+              "GDPRREQUEST"
+            ]
+          },
+          "Name": {
+            "description": "Full name of contact/organisation (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "FirstName": {
+            "description": "First name of contact person (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "LastName": {
+            "description": "Last name of contact person (max length = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "EmailAddress": {
+            "description": "Email address of contact person (umlauts not supported) (max length  = 255)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "BankAccountDetails": {
+            "description": "Bank account number of contact",
+            "type": "string"
+          },
+          "TaxNumber": {
+            "description": "Tax number of contact – this is also known as the ABN (Australia), GST Number (New Zealand), VAT Number (UK) or Tax ID Number (US and global) in the Xero UI depending on which regionalized version of Xero you are using (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "Addresses": {
+            "description": "Store certain address types for a contact – see address types",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          },
+          "Phones": {
+            "description": "Store certain phone types for a contact – see phone types",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Phone"
+            }
+          },
+          "IsSupplier": {
+            "description": "true or false – Boolean that describes if a contact that has any AP  invoices entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts payable invoice is generated against this contact.",
+            "type": "boolean"
+          },
+          "IsCustomer": {
+            "description": "true or false – Boolean that describes if a contact has any AR invoices entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts receivable invoice is generated against this contact.",
+            "type": "boolean"
+          },
+          "DefaultCurrency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "UpdatedDateUTC": {
+            "description": "UTC timestamp of last update to contact",
+            "type": "string",
+            "readOnly": true
+          },
+          "ContactPersons": {
+            "description": "See contact persons",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPerson"
+            }
+          },
+          "HasValidationErrors": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "ContactPerson": {
+        "type": "object",
+        "properties": {
+          "FirstName": {
+            "description": "First name of person",
+            "type": "string"
+          },
+          "LastName": {
+            "description": "Last name of person",
+            "type": "string"
+          },
+          "EmailAddress": {
+            "description": "Email address of person",
+            "type": "string"
+          },
+          "IncludeInEmails": {
+            "description": "boolean to indicate whether contact should be included on emails with invoices etc.",
+            "type": "boolean"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "AddressType": {
+            "description": "define the type of address",
+            "type": "string",
+            "enum": [
+              "POBOX",
+              "STREET"
+            ]
+          },
+          "AddressLine1": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine2": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine3": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "AddressLine4": {
+            "description": "max length = 500",
+            "maxLength": 500,
+            "type": "string"
+          },
+          "City": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "Region": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "max length = 50",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "Country": {
+            "description": "max length = 50, [A-Z], [a-z] only",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "AttentionTo": {
+            "description": "max length = 255",
+            "maxLength": 255,
+            "type": "string"
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "properties": {
+          "PhoneType": {
+            "type": "string",
+            "enum": [
+              "DEFAULT",
+              "DDI",
+              "MOBILE",
+              "FAX",
+              "OFFICE"
+            ]
+          },
+          "PhoneNumber": {
+            "description": "max length = 50",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "PhoneAreaCode": {
+            "description": "max length = 10",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "PhoneCountryCode": {
+            "description": "max length = 20",
+            "maxLength": 20,
+            "type": "string"
+          }
+        }
+      },
+      "LineItem": {
+        "type": "object",
+        "properties": {
+          "LineItemID": {
+            "description": "LineItem unique ID",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Description": {
+            "description": "Description needs to be at least 1 char long. A line item with just a description (i.e no unit amount or quantity) can be created by specifying just a <Description> element that contains at least 1 character",
+            "type": "string"
+          },
+          "Quantity": {
+            "description": "LineItem Quantity",
+            "type": "number",
+            "format": "double"
+          },
+          "UnitAmount": {
+            "description": "LineItem Unit Amount",
+            "type": "number",
+            "format": "double"
+          },
+          "ItemCode": {
+            "description": "See Items",
+            "type": "string"
+          },
+          "AccountCode": {
+            "description": "See Accounts",
+            "type": "string"
+          },
+          "AccountID": {
+            "description": "The associated account ID related to this line item",
+            "type": "string",
+            "format": "uuid"
+          },
+          "TaxType": {
+            "description": "The tax type from TaxRates",
+            "type": "string"
+          },
+          "TaxAmount": {
+            "description": "The tax amount is auto calculated as a percentage of the line amount (see below) based on the tax rate. This value can be overriden if the calculated <TaxAmount> is not correct.",
+            "type": "number",
+            "format": "double"
+          },
+          "Item": {
+            "$ref": "#/components/schemas/LineItemItem"
+          },
+          "LineAmount": {
+            "description": "If you wish to omit either the Quantity or UnitAmount you can provide a LineAmount and Xero will calculate the missing amount for you. The line amount reflects the discounted price if either a DiscountRate or DiscountAmount has been used i.e. LineAmount = Quantity * Unit Amount * ((100 - DiscountRate)/100) or LineAmount = (Quantity * UnitAmount) - DiscountAmount",
+            "type": "number",
+            "format": "double"
+          },
+          "Tracking": {
+            "description": "Optional Tracking Category – see Tracking.  Any LineItem can have a  maximum of 2 <TrackingCategory> elements.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItemTracking"
+            }
+          },
+          "DiscountRate": {
+            "description": "Percentage discount being applied to a line item (only supported on  ACCREC invoices – ACC PAY invoices and credit notes in Xero do not support discounts",
+            "type": "number",
+            "format": "double"
+          },
+          "DiscountAmount": {
+            "description": "Discount amount being applied to a line item. Only supported on ACCREC invoices and quotes. ACCPAY invoices and credit notes in Xero do not support discounts.",
+            "type": "number",
+            "format": "double"
+          },
+          "RepeatingInvoiceID": {
+            "description": "The Xero identifier for a Repeating Invoice",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Taxability": {
+            "description": "The type of taxability",
+            "type": "string",
+            "enum": [
+              "TAXABLE",
+              "NON_TAXABLE",
+              "EXEMPT",
+              "PART_TAXABLE",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "SalesTaxCodeId": {
+            "description": "The ID of the sales tax code",
+            "type": "number"
+          },
+          "TaxBreakdown": {
+            "description": "An array of tax components defined for this line item",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxBreakdownComponent"
+            }
+          }
+        }
+      },
+      "LineItemItem": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "description": "User defined item code (max length = 30)",
+            "maxLength": 30,
+            "type": "string"
+          },
+          "Name": {
+            "description": "The name of the item (max length = 50)",
+            "maxLength": 50,
+            "type": "string"
+          },
+          "ItemID": {
+            "description": "The Xero identifier for an Item",
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "LineItemTracking": {
+        "type": "object",
+        "properties": {
+          "TrackingCategoryID": {
+            "description": "The Xero identifier for a tracking category",
+            "type": "string",
+            "format": "uuid"
+          },
+          "TrackingOptionID": {
+            "description": "The Xero identifier for a tracking category option",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "description": "The name of the tracking category",
+            "maxLength": 100,
+            "type": "string"
+          },
+          "Option": {
+            "description": "See Tracking Options",
+            "type": "string"
+          }
+        }
+      },
+      "TaxBreakdownComponent": {
+        "type": "object",
+        "properties": {
+          "TaxComponentId": {
+            "description": "The unique ID number of this component",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Type": {
+            "description": "The type of the jurisdiction",
+            "type": "string",
+            "enum": [
+              "SYSGST/USCOUNTRY",
+              "SYSGST/USSTATE",
+              "SYSGST/USCOUNTY",
+              "SYSGST/USCITY",
+              "SYSGST/USSPECIAL"
+            ]
+          },
+          "Name": {
+            "description": "The name of the jurisdiction",
+            "type": "string"
+          },
+          "TaxPercentage": {
+            "description": "The percentage of the tax",
+            "type": "number"
+          },
+          "TaxAmount": {
+            "description": "The amount of the tax",
+            "type": "number"
+          },
+          "TaxableAmount": {
+            "description": "The amount that is taxable",
+            "type": "number"
+          },
+          "NonTaxableAmount": {
+            "description": "The amount that is not taxable",
+            "type": "number"
+          },
+          "ExemptAmount": {
+            "description": "The amount that is exempt",
+            "type": "number"
+          },
+          "StateAssignedNo": {
+            "description": "The state assigned number of the jurisdiction",
+            "type": "string"
+          },
+          "JurisdictionRegion": {
+            "description": "Name identifying the region within the country",
+            "type": "string"
+          }
+        }
+      },
+      "LineAmountTypes": {
+        "description": "Line amounts are exclusive of tax by default if you don't specify this element. See Line Amount Types",
+        "type": "string",
+        "enum": [
+          "Exclusive",
+          "Inclusive",
+          "NoTax"
+        ]
+      },
+      "CurrencyCode": {
+        "description": "3 letter alpha code for the currency – see list of currency codes",
+        "type": "string",
+        "enum": [
+          "AED",
+          "AFN",
+          "ALL",
+          "AMD",
+          "ANG",
+          "AOA",
+          "ARS",
+          "AUD",
+          "AWG",
+          "AZN",
+          "BAM",
+          "BBD",
+          "BDT",
+          "BGN",
+          "BHD",
+          "BIF",
+          "BMD",
+          "BND",
+          "BOB",
+          "BRL",
+          "BSD",
+          "BTN",
+          "BWP",
+          "BYN",
+          "BYR",
+          "BZD",
+          "CAD",
+          "CDF",
+          "CHF",
+          "CLF",
+          "CLP",
+          "CNY",
+          "COP",
+          "CRC",
+          "CUC",
+          "CUP",
+          "CVE",
+          "CZK",
+          "DJF",
+          "DKK",
+          "DOP",
+          "DZD",
+          "EEK",
+          "EGP",
+          "ERN",
+          "ETB",
+          "EUR",
+          "FJD",
+          "FKP",
+          "GBP",
+          "GEL",
+          "GHS",
+          "GIP",
+          "GMD",
+          "GNF",
+          "GTQ",
+          "GYD",
+          "HKD",
+          "HNL",
+          "HRK",
+          "HTG",
+          "HUF",
+          "IDR",
+          "ILS",
+          "INR",
+          "IQD",
+          "IRR",
+          "ISK",
+          "JMD",
+          "JOD",
+          "JPY",
+          "KES",
+          "KGS",
+          "KHR",
+          "KMF",
+          "KPW",
+          "KRW",
+          "KWD",
+          "KYD",
+          "KZT",
+          "LAK",
+          "LBP",
+          "LKR",
+          "LRD",
+          "LSL",
+          "LTL",
+          "LVL",
+          "LYD",
+          "MAD",
+          "MDL",
+          "MGA",
+          "MKD",
+          "MMK",
+          "MNT",
+          "MOP",
+          "MRO",
+          "MRU",
+          "MUR",
+          "MVR",
+          "MWK",
+          "MXN",
+          "MXV",
+          "MYR",
+          "MZN",
+          "NAD",
+          "NGN",
+          "NIO",
+          "NOK",
+          "NPR",
+          "NZD",
+          "OMR",
+          "PAB",
+          "PEN",
+          "PGK",
+          "PHP",
+          "PKR",
+          "PLN",
+          "PYG",
+          "QAR",
+          "RON",
+          "RSD",
+          "RUB",
+          "RWF",
+          "SAR",
+          "SBD",
+          "SCR",
+          "SDG",
+          "SEK",
+          "SGD",
+          "SHP",
+          "SKK",
+          "SLE",
+          "SLL",
+          "SOS",
+          "SRD",
+          "STN",
+          "STD",
+          "SVC",
+          "SYP",
+          "SZL",
+          "THB",
+          "TJS",
+          "TMT",
+          "TND",
+          "TOP",
+          "TRY",
+          "TTD",
+          "TWD",
+          "TZS",
+          "UAH",
+          "UGX",
+          "USD",
+          "UYU",
+          "UZS",
+          "VEF",
+          "VES",
+          "VND",
+          "VUV",
+          "WST",
+          "XAF",
+          "XCD",
+          "XOF",
+          "XPF",
+          "YER",
+          "ZAR",
+          "ZMW",
+          "ZMK",
+          "ZWD"
+        ]
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "PaymentID": {
+            "description": "The Xero identifier for an Payment e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Date": {
+            "description": "Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06",
+            "type": "string"
+          },
+          "Amount": {
+            "description": "The amount of the payment. Must be less than or equal to the outstanding amount owing on the invoice e.g. 200.00",
+            "type": "number",
+            "format": "double"
+          },
+          "Reference": {
+            "description": "An optional description for the payment e.g. Direct Debit",
+            "type": "string"
+          },
+          "CurrencyRate": {
+            "description": "Exchange rate when payment is received. Only used for non base currency invoices and credit notes e.g. 0.7500",
+            "type": "number",
+            "format": "double"
+          },
+          "HasAccount": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          },
+          "HasValidationErrors": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "PrepaymentSummary": {
+        "type": "object",
+        "properties": {
+          "PrepaymentID": {
+            "description": "Xero generated unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Total": {
+            "description": "The total of the prepayment(subtotal + total tax)",
+            "type": "number",
+            "format": "double"
+          },
+          "AppliedAmount": {
+            "description": "The amount of applied to an invoice",
+            "type": "number",
+            "format": "double"
+          },
+          "RemainingCredit": {
+            "description": "The remaining credit balance on the prepayment",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "OverpaymentSummary": {
+        "type": "object",
+        "properties": {
+          "OverpaymentID": {
+            "description": "Xero generated unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Total": {
+            "description": "The total of the overpayment (subtotal + total tax)",
+            "type": "number",
+            "format": "double"
+          },
+          "AppliedAmount": {
+            "description": "The amount of applied to an invoice",
+            "type": "number",
+            "format": "double"
+          },
+          "RemainingCredit": {
+            "description": "The remaining credit balance on the overpayment",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "CreditNoteSummary": {
+        "type": "object",
+        "properties": {
+          "CreditNoteID": {
+            "description": "Xero generated unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteNumber": {
+            "description": "ACCRECCREDIT – Unique alpha numeric code identifying credit note (when missing will auto-generate from your Organisation Invoice Settings)",
+            "type": "string"
+          },
+          "Total": {
+            "description": "The total of the Credit Note(subtotal + total tax)",
+            "type": "number",
+            "format": "double"
+          },
+          "AppliedAmount": {
+            "description": "The amount of applied to an invoice",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "InvoiceAddress": {
+        "type": "object",
+        "properties": {
+          "InvoiceAddressType": {
+            "description": "Indicates whether the address is defined as origin (FROM) or destination (TO)",
+            "type": "string",
+            "enum": [
+              "FROM",
+              "TO"
+            ]
+          },
+          "AddressLine1": {
+            "description": "First line of a physical address",
+            "type": "string"
+          },
+          "AddressLine2": {
+            "description": "Second line of a physical address",
+            "type": "string"
+          },
+          "AddressLine3": {
+            "description": "Third line of a physical address",
+            "type": "string"
+          },
+          "AddressLine4": {
+            "description": "Fourth line of a physical address",
+            "type": "string"
+          },
+          "City": {
+            "description": "City of a physical address",
+            "type": "string"
+          },
+          "Region": {
+            "description": "Region or state of a physical address",
+            "type": "string"
+          },
+          "PostalCode": {
+            "description": "Postal code of a physical address",
+            "type": "string"
+          },
+          "Country": {
+            "description": "Country of a physical address",
+            "type": "string"
+          }
+        }
+      },
+      "Attachments": {
+        "type": "object",
+        "properties": {
+          "Attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          }
+        }
+      },
+      "Attachment": {
+        "type": "object",
+        "properties": {
+          "AttachmentID": {
+            "description": "Unique ID for the file",
+            "type": "string",
+            "format": "uuid"
+          },
+          "FileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "Url": {
+            "description": "URL to the file on xero.com",
+            "type": "string"
+          },
+          "MimeType": {
+            "description": "Type of file",
+            "type": "string"
+          },
+          "ContentLength": {
+            "description": "Length of the file content",
+            "type": "integer"
+          },
+          "IncludeOnline": {
+            "description": "Include the file with the online invoice",
+            "type": "boolean"
+          }
+        }
+      },
+      "OnlineInvoices": {
+        "type": "object",
+        "properties": {
+          "OnlineInvoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnlineInvoice"
+            }
+          }
+        }
+      },
+      "OnlineInvoice": {
+        "type": "object",
+        "properties": {
+          "OnlineInvoiceUrl": {
+            "description": "the URL to an online invoice",
+            "type": "string"
+          }
+        }
+      },
+      "RequestEmpty": {
+        "type": "object",
+        "properties": {
+          "Status": {
+            "description": "Need at least one field to create an empty JSON payload",
+            "type": "string"
+          }
+        }
+      },
+      "HistoryRecords": {
+        "type": "object",
+        "properties": {
+          "HistoryRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRecord"
+            }
+          }
+        }
+      },
+      "HistoryRecord": {
+        "type": "object",
+        "properties": {
+          "Details": {
+            "description": "details",
+            "type": "string"
+          },
+          "Changes": {
+            "description": "Name of branding theme",
+            "type": "string"
+          },
+          "User": {
+            "description": "has a value of 0",
+            "type": "string"
+          },
+          "DateUTC": {
+            "description": "UTC timestamp of creation date of branding theme",
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "InvoiceReminders": {
+        "type": "object",
+        "properties": {
+          "InvoiceReminders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceReminder"
+            }
+          }
+        }
+      },
+      "InvoiceReminder": {
+        "type": "object",
+        "properties": {
+          "Enabled": {
+            "description": "setting for on or off",
+            "type": "boolean"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "pageCount": {
+            "type": "integer"
+          },
+          "itemCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ErrorNumber": {
+            "description": "Exception number",
+            "type": "integer"
+          },
+          "Type": {
+            "description": "Exception type",
+            "type": "string"
+          },
+          "Message": {
+            "description": "Exception message",
+            "type": "string"
+          },
+          "Elements": {
+            "description": "Array of Elements of validation Errors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          }
+        }
+      },
+      "Element": {
+        "type": "object",
+        "properties": {
+          "ValidationErrors": {
+            "description": "Array of Validation Error message",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "BatchPaymentID": {
+            "description": "Unique ID for batch payment object with validation error",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BankTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "InvoiceID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ItemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "PurchaseOrderID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "description": "Validation error message",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
