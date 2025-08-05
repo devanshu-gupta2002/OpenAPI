@@ -1,0 +1,1662 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Xero Payments API",
+    "version": "1.0.0",
+    "description": "API specification for Xero Payments and Prepayments endpoints",
+    "contact": {
+      "name": "Xero Platform Team",
+      "email": "api@xero.com",
+      "url": "https://developer.xero.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.xero.com/api.xro/2.0",
+      "description": "Xero Accounting API"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/Payments": {
+      "get": {
+        "tags": ["Payments"],
+        "operationId": "getPayments",
+        "summary": "Retrieves payments for invoices and credit notes",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ifModifiedSince"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Up to 100 payments will be returned in a single API call",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Payments array for all Payments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payments"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Payments"],
+        "operationId": "createPayments",
+        "summary": "Creates multiple payments for invoices or credit notes",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Payments array with Payment object in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payments"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Payments array for newly created Payment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Payments"],
+        "operationId": "createPayment",
+        "summary": "Creates a single payment for invoice or credit notes",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Request body with a single Payment object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Payment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Payments array for newly created Payment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Payments/{PaymentID}": {
+      "get": {
+        "tags": ["Payments"],
+        "operationId": "getPayment",
+        "summary": "Retrieves a specific payment for invoices and credit notes using a unique payment Id",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Payments array for specified Payment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payments"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Payments"],
+        "operationId": "deletePayment",
+        "summary": "Updates a specific payment for invoices and credit notes",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentDelete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Payments array for updated Payment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payments"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Payments/{PaymentID}/History": {
+      "get": {
+        "tags": ["Payments"],
+        "operationId": "getPaymentHistory",
+        "summary": "Retrieves history records of a specific payment",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRetrieved"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Payments"],
+        "operationId": "createPaymentHistory",
+        "summary": "Creates a history record for a specific payment",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/PaymentID"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/historyRecords"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRecordCreated"
+          },
+          "400": {
+            "description": "A failed request due to validation error - API is not able to create HistoryRecord for Payments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/PaymentServices": {
+      "get": {
+        "tags": ["PaymentServices"],
+        "operationId": "getPaymentServices",
+        "summary": "Retrieves payment services",
+        "security": [
+          {
+            "OAuth2": ["paymentservices"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type PaymentServices array for all PaymentService",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentServices"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["PaymentServices"],
+        "operationId": "createPaymentService",
+        "summary": "Creates a payment service",
+        "security": [
+          {
+            "OAuth2": ["paymentservices"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "PaymentServices array with PaymentService object in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentServices"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type PaymentServices array for newly created PaymentService",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentServices"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Prepayments": {
+      "get": {
+        "tags": ["Prepayments"],
+        "operationId": "getPrepayments",
+        "summary": "Retrieves prepayments",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ifModifiedSince"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "e.g. page=1 – Up to 100 prepayments will be returned in a single API call with line items shown for each overpayment",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/unitdp"
+          },
+          {
+            "$ref": "#/components/parameters/pageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Prepayments array for all Prepayment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prepayments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Prepayments/{PrepaymentID}": {
+      "get": {
+        "tags": ["Prepayments"],
+        "operationId": "getPrepayment",
+        "summary": "Allows you to retrieve a specified prepayments",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PrepaymentID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Prepayments array for a specified Prepayment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prepayments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Prepayments/{PrepaymentID}/Allocations": {
+      "put": {
+        "tags": ["Prepayments"],
+        "operationId": "createPrepaymentAllocations",
+        "summary": "Allows you to create an Allocation for prepayments",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PrepaymentID"
+          },
+          {
+            "$ref": "#/components/parameters/summarizeErrors"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Allocations with an array of Allocation object in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Allocations"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Allocations array of Allocation for all Prepayment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Allocations"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400Error"
+          }
+        }
+      }
+    },
+    "/Prepayments/{PrepaymentID}/Allocations/{AllocationID}": {
+      "delete": {
+        "tags": ["Prepayments"],
+        "operationId": "deletePrepaymentAllocations",
+        "summary": "Deletes an Allocation from a Prepayment",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PrepaymentID"
+          },
+          {
+            "$ref": "#/components/parameters/AllocationID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Allocation with the isDeleted flag as true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Allocation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Prepayments/{PrepaymentID}/History": {
+      "get": {
+        "tags": ["Prepayments"],
+        "operationId": "getPrepaymentHistory",
+        "summary": "Retrieves history record for a specific prepayment",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions", "accounting.transactions.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/PrepaymentID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRetrieved"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Prepayments"],
+        "operationId": "createPrepaymentHistory",
+        "summary": "Creates a history record for a specific prepayment",
+        "security": [
+          {
+            "OAuth2": ["accounting.transactions"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/PrepaymentID"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/historyRecords"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/HistoryRecordCreated"
+          },
+          "400": {
+            "description": "Unsupported - return response incorrect exception, API is not able to create HistoryRecord for Expense Claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "OAuth2 security scheme",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.xero.com/identity/connect/authorize",
+            "tokenUrl": "https://identity.xero.com/connect/token",
+            "scopes": {
+              "accounting.transactions": "Grant read-write access to bank transactions, credit notes, invoices, repeating invoices",
+              "accounting.transactions.read": "Grant read-only access to invoices",
+              "paymentservices": "Grant read-write access to payment services"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "requiredHeader": {
+        "in": "header",
+        "name": "xero-tenant-id",
+        "description": "Xero identifier for Tenant",
+        "schema": {
+          "type": "string"
+        },
+        "required": true
+      },
+      "ifModifiedSince": {
+        "in": "header",
+        "name": "If-Modified-Since",
+        "description": "Only records created or modified since this timestamp will be returned",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "pageSize": {
+        "in": "query",
+        "name": "pageSize",
+        "description": "Number of records to retrieve per page",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "summarizeErrors": {
+        "in": "query",
+        "name": "summarizeErrors",
+        "description": "If false return 200 OK and mix of successfully created objects and any with validation errors",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "idempotencyKey": {
+        "in": "header",
+        "name": "Idempotency-Key",
+        "description": "This allows you to safely retry requests without the risk of duplicate processing. 128 character max.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "unitdp": {
+        "in": "query",
+        "name": "unitdp",
+        "description": "e.g. unitdp=4 – (Unit Decimal Places) You can opt in to use four decimal places for unit amounts",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "PaymentID": {
+        "in": "path",
+        "name": "PaymentID",
+        "description": "Unique identifier for a Payment",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "PrepaymentID": {
+        "in": "path",
+        "name": "PrepaymentID",
+        "description": "Unique identifier for a PrePayment",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "AllocationID": {
+        "in": "path",
+        "name": "AllocationID",
+        "description": "Unique identifier for Allocation object",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "requestBodies": {
+      "historyRecords": {
+        "required": true,
+        "description": "HistoryRecords containing an array of HistoryRecord objects in body of request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400Error": {
+        "description": "A failed request due to validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "HistoryRetrieved": {
+        "description": "Success - return response of HistoryRecords array of 0 to N HistoryRecord",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      },
+      "HistoryRecordCreated": {
+        "description": "Success - return response of type HistoryRecords array of HistoryRecord objects",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HistoryRecords"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Payments": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "Invoice": {
+            "$ref": "#/components/schemas/InvoiceRef"
+          },
+          "CreditNote": {
+            "$ref": "#/components/schemas/CreditNoteRef"
+          },
+          "Prepayment": {
+            "$ref": "#/components/schemas/PrepaymentRef"
+          },
+          "Overpayment": {
+            "$ref": "#/components/schemas/OverpaymentRef"
+          },
+          "InvoiceNumber": {
+            "description": "Number of invoice or credit note you are applying payment to e.g.INV-4003",
+            "type": "string"
+          },
+          "CreditNoteNumber": {
+            "description": "Number of invoice or credit note you are applying payment to e.g. INV-4003",
+            "type": "string"
+          },
+          "BatchPayment": {
+            "$ref": "#/components/schemas/BatchPaymentRef"
+          },
+          "Account": {
+            "$ref": "#/components/schemas/AccountRef"
+          },
+          "Code": {
+            "description": "Code of account you are using to make the payment e.g. 001 (note- not all accounts have a code value)",
+            "type": "string"
+          },
+          "Date": {
+            "description": "Date the payment is being made (YYYY-MM-DD) e.g. 2009-09-06",
+            "type": "string",
+            "format": "date"
+          },
+          "CurrencyRate": {
+            "description": "Exchange rate when payment is received. Only used for non base currency invoices and credit notes e.g. 0.7500",
+            "type": "number",
+            "format": "double"
+          },
+          "Amount": {
+            "description": "The amount of the payment. Must be less than or equal to the outstanding amount owing on the invoice e.g. 200.00",
+            "type": "number",
+            "format": "double"
+          },
+          "BankAmount": {
+            "description": "The amount of the payment in the currency of the bank account.",
+            "type": "number",
+            "format": "double"
+          },
+          "Reference": {
+            "description": "An optional description for the payment e.g. Direct Debit",
+            "type": "string"
+          },
+          "IsReconciled": {
+            "description": "An optional parameter for the payment. A boolean indicating whether you would like the payment to be created as reconciled when using PUT, or whether a payment has been reconciled when using GET",
+            "type": "boolean"
+          },
+          "Status": {
+            "description": "The status of the payment.",
+            "type": "string",
+            "enum": ["AUTHORISED", "DELETED"]
+          },
+          "PaymentType": {
+            "description": "See Payment Types.",
+            "readOnly": true,
+            "type": "string",
+            "enum": [
+              "ACCRECPAYMENT",
+              "ACCPAYPAYMENT",
+              "ARCREDITPAYMENT",
+              "APCREDITPAYMENT",
+              "AROVERPAYMENTPAYMENT",
+              "ARPREPAYMENTPAYMENT",
+              "APPREPAYMENTPAYMENT",
+              "APOVERPAYMENTPAYMENT"
+            ]
+          },
+          "UpdatedDateUTC": {
+            "description": "UTC timestamp of last update to the payment",
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "PaymentID": {
+            "description": "The Xero identifier for an Payment e.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BatchPaymentID": {
+            "description": "Present if the payment was created as part of a batch.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BankAccountNumber": {
+            "description": "The suppliers bank account number the payment is being made to",
+            "type": "string"
+          },
+          "Particulars": {
+            "description": "The suppliers bank account number the payment is being made to",
+            "type": "string"
+          },
+          "Details": {
+            "description": "The information to appear on the supplier's bank account",
+            "type": "string"
+          },
+          "HasAccount": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          },
+          "HasValidationErrors": {
+            "description": "A boolean to indicate if a contact has an validation errors",
+            "type": "boolean",
+            "default": false
+          },
+          "StatusAttributeString": {
+            "description": "A string to indicate if a invoice status",
+            "type": "string"
+          },
+          "ValidationErrors": {
+            "description": "Displays array of validation error messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "PaymentDelete": {
+        "type": "object",
+        "properties": {
+          "Status": {
+            "description": "The status of the payment.",
+            "type": "string",
+            "default": "DELETED"
+          }
+        },
+        "required": ["Status"]
+      },
+      "PaymentServices": {
+        "type": "object",
+        "properties": {
+          "PaymentServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentService"
+            }
+          }
+        }
+      },
+      "PaymentService": {
+        "type": "object",
+        "properties": {
+          "PaymentServiceID": {
+            "description": "Xero identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "PaymentServiceName": {
+            "description": "Name of payment service",
+            "type": "string"
+          },
+          "PaymentServiceUrl": {
+            "description": "The custom payment URL",
+            "type": "string"
+          },
+          "PayNowText": {
+            "description": "The text displayed on the Pay Now button in Xero Online Invoicing. If this is not set it will default to Pay by credit card",
+            "type": "string"
+          },
+          "PaymentServiceType": {
+            "description": "This will always be CUSTOM for payment services created via the API.",
+            "type": "string"
+          },
+          "ValidationErrors": {
+            "description": "Displays array of validation error messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "Prepayments": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "Warnings": {
+            "description": "Displays array of warning messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "Prepayments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Prepayment"
+            }
+          }
+        }
+      },
+      "Prepayment": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "description": "See Prepayment Types",
+            "type": "string",
+            "enum": [
+              "RECEIVE-PREPAYMENT",
+              "SPEND-PREPAYMENT",
+              "ARPREPAYMENT",
+              "APPREPAYMENT"
+            ]
+          },
+          "Contact": {
+            "$ref": "#/components/schemas/ContactRef"
+          },
+          "Date": {
+            "description": "The date the prepayment is created YYYY-MM-DD",
+            "type": "string",
+            "format": "date"
+          },
+          "Status": {
+            "description": "See Prepayment Status Codes",
+            "type": "string",
+            "enum": ["AUTHORISED", "PAID", "VOIDED"]
+          },
+          "LineAmountTypes": {
+            "$ref": "#/components/schemas/LineAmountTypes"
+          },
+          "LineItems": {
+            "description": "See Prepayment Line Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          },
+          "SubTotal": {
+            "description": "The subtotal of the prepayment excluding taxes",
+            "type": "number",
+            "format": "double"
+          },
+          "TotalTax": {
+            "description": "The total tax on the prepayment",
+            "type": "number",
+            "format": "double"
+          },
+          "Total": {
+            "description": "The total of the prepayment(subtotal + total tax)",
+            "type": "number",
+            "format": "double"
+          },
+          "Reference": {
+            "description": "Returns Invoice number field. Reference field isn't available.",
+            "type": "string",
+            "readOnly": true
+          },
+          "UpdatedDateUTC": {
+            "description": "UTC timestamp of last update to the prepayment",
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "CurrencyCode": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "PrepaymentID": {
+            "description": "Xero generated unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "CurrencyRate": {
+            "description": "The currency rate for a multicurrency prepayment. If no rate is specified, the XE.com day rate is used",
+            "type": "number",
+            "format": "double"
+          },
+          "RemainingCredit": {
+            "description": "The remaining credit balance on the prepayment",
+            "type": "number",
+            "format": "double"
+          },
+          "Allocations": {
+            "description": "See Allocations",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Allocation"
+            }
+          },
+          "Payments": {
+            "description": "See Payments",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRef"
+            }
+          },
+          "AppliedAmount": {
+            "description": "The amount of applied to an invoice",
+            "type": "number",
+            "format": "double"
+          },
+          "HasAttachments": {
+            "description": "boolean to indicate if a prepayment has an attachment",
+            "readOnly": true,
+            "type": "boolean",
+            "default": false
+          },
+          "Attachments": {
+            "description": "See Attachments",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentRef"
+            }
+          }
+        }
+      },
+      "Allocations": {
+        "type": "object",
+        "properties": {
+          "Allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Allocation"
+            }
+          }
+        }
+      },
+      "Allocation": {
+        "type": "object",
+        "required": ["Amount", "Invoice", "Date"],
+        "properties": {
+          "AllocationID": {
+            "description": "Xero generated unique identifier",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Invoice": {
+            "$ref": "#/components/schemas/InvoiceRef"
+          },
+          "Overpayment": {
+            "$ref": "#/components/schemas/OverpaymentRef"
+          },
+          "Prepayment": {
+            "$ref": "#/components/schemas/PrepaymentRef"
+          },
+          "CreditNote": {
+            "$ref": "#/components/schemas/CreditNoteRef"
+          },
+          "Amount": {
+            "description": "the amount being applied to the invoice",
+            "type": "number",
+            "format": "double"
+          },
+          "Date": {
+            "description": "the date the allocation is applied YYYY-MM-DD.",
+            "type": "string",
+            "format": "date"
+          },
+          "IsDeleted": {
+            "description": "A flag that returns true when the allocation is succesfully deleted",
+            "type": "boolean",
+            "readOnly": true
+          },
+          "StatusAttributeString": {
+            "description": "A string to indicate if a invoice status",
+            "type": "string"
+          },
+          "ValidationErrors": {
+            "description": "Displays array of validation error messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "HistoryRecords": {
+        "type": "object",
+        "properties": {
+          "HistoryRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRecord"
+            }
+          }
+        }
+      },
+      "HistoryRecord": {
+        "type": "object",
+        "properties": {
+          "Details": {
+            "description": "details",
+            "type": "string"
+          },
+          "Changes": {
+            "description": "Name of branding theme",
+            "type": "string"
+          },
+          "User": {
+            "description": "has a value of 0",
+            "type": "string"
+          },
+          "DateUTC": {
+            "description": "UTC timestamp of creation date of branding theme",
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "pageCount": {
+            "type": "integer"
+          },
+          "itemCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ErrorNumber": {
+            "description": "Exception number",
+            "type": "integer"
+          },
+          "Type": {
+            "description": "Exception type",
+            "type": "string"
+          },
+          "Message": {
+            "description": "Exception message",
+            "type": "string"
+          },
+          "Elements": {
+            "description": "Array of Elements of validation Errors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          }
+        }
+      },
+      "Element": {
+        "type": "object",
+        "properties": {
+          "ValidationErrors": {
+            "description": "Array of Validation Error message",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "BatchPaymentID": {
+            "description": "Unique ID for batch payment object with validation error",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BankTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "InvoiceID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ItemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "PurchaseOrderID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "description": "Validation error message",
+            "type": "string"
+          }
+        }
+      },
+      "LineAmountTypes": {
+        "description": "Line amounts are exclusive of tax by default if you don't specify this element. See Line Amount Types",
+        "type": "string",
+        "enum": ["Exclusive", "Inclusive", "NoTax"]
+      },
+      "LineItem": {
+        "type": "object",
+        "properties": {
+          "LineItemID": {
+            "description": "LineItem unique ID",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Description": {
+            "description": "Description needs to be at least 1 char long. A line item with just a description (i.e no unit amount or quantity) can be created by specifying just a <Description> element that contains at least 1 character",
+            "type": "string"
+          },
+          "Quantity": {
+            "description": "LineItem Quantity",
+            "type": "number",
+            "format": "double"
+          },
+          "UnitAmount": {
+            "description": "LineItem Unit Amount",
+            "type": "number",
+            "format": "double"
+          },
+          "ItemCode": {
+            "description": "See Items",
+            "type": "string"
+          },
+          "AccountCode": {
+            "description": "See Accounts",
+            "type": "string"
+          },
+          "AccountID": {
+            "description": "The associated account ID related to this line item",
+            "type": "string",
+            "format": "uuid"
+          },
+          "TaxType": {
+            "description": "The tax type from TaxRates",
+            "type": "string"
+          },
+          "TaxAmount": {
+            "description": "The tax amount is auto calculated as a percentage of the line amount (see below) based on the tax rate. This value can be overriden if the calculated <TaxAmount> is not correct.",
+            "type": "number",
+            "format": "double"
+          },
+          "LineAmount": {
+            "description": "If you wish to omit either the Quantity or UnitAmount you can provide a LineAmount and Xero will calculate the missing amount for you. The line amount reflects the discounted price if either a DiscountRate or DiscountAmount has been used i.e. LineAmount = Quantity * Unit Amount * ((100 - DiscountRate)/100) or LineAmount = (Quantity * UnitAmount) - DiscountAmount",
+            "type": "number",
+            "format": "double"
+          },
+          "Tracking": {
+            "description": "Optional Tracking Category – see Tracking. Any LineItem can have a maximum of 2 <TrackingCategory> elements.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItemTracking"
+            }
+          },
+          "DiscountRate": {
+            "description": "Percentage discount being applied to a line item (only supported on ACCREC invoices – ACC PAY invoices and credit notes in Xero do not support discounts",
+            "type": "number",
+            "format": "double"
+          },
+          "DiscountAmount": {
+            "description": "Discount amount being applied to a line item. Only supported on ACCREC invoices and quotes. ACCPAY invoices and credit notes in Xero do not support discounts.",
+            "type": "number",
+            "format": "double"
+          },
+          "RepeatingInvoiceID": {
+            "description": "The Xero identifier for a Repeating Invoice",
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "LineItemTracking": {
+        "type": "object",
+        "properties": {
+          "TrackingCategoryID": {
+            "description": "The Xero identifier for a tracking category",
+            "type": "string",
+            "format": "uuid"
+          },
+          "TrackingOptionID": {
+            "description": "The Xero identifier for a tracking category option",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Name": {
+            "description": "The name of the tracking category",
+            "type": "string",
+            "maxLength": 100
+          },
+          "Option": {
+            "description": "See Tracking Options",
+            "type": "string"
+          }
+        }
+      },
+      "CurrencyCode": {
+        "description": "3 letter alpha code for the currency – see list of currency codes",
+        "type": "string",
+        "enum": [
+          "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+          "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+          "BSD", "BTN", "BWP", "BYN", "BYR", "BZD", "CAD", "CDF", "CHF", "CLF",
+          "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK",
+          "DOP", "DZD", "EEK", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP",
+          "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK",
+          "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
+          "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT",
+          "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL",
+          "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MRU", "MUR", "MVR", "MWK",
+          "MXN", "MXV", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD",
+          "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON",
+          "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP",
+          "SKK", "SLE", "SLL", "SOS", "SRD", "STD", "STN", "SVC", "SYP", "SZL",
+          "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH",
+          "UGX", "USD", "UYU", "UZS", "VEF", "VES", "VND", "VUV", "WST", "XAF",
+          "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZMK", "ZWD"
+        ]
+      },
+      "InvoiceRef": {
+        "type": "object",
+        "properties": {
+          "InvoiceID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "InvoiceNumber": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "string"
+          },
+          "LineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          }
+        }
+      },
+      "CreditNoteRef": {
+        "type": "object",
+        "properties": {
+          "CreditNoteID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteNumber": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "string"
+          }
+        }
+      },
+      "PrepaymentRef": {
+        "type": "object",
+        "properties": {
+          "PrepaymentID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "LineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            }
+          }
+        }
+      },
+      "OverpaymentRef": {
+        "type": "object",
+        "properties": {
+          "OverpaymentID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "BatchPaymentRef": {
+        "type": "object",
+        "properties": {
+          "BatchPaymentID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Account": {
+            "$ref": "#/components/schemas/AccountRef"
+          },
+          "Date": {
+            "type": "string",
+            "format": "date"
+          },
+          "Type": {
+            "type": "string"
+          },
+          "Status": {
+            "type": "string"
+          },
+          "TotalAmount": {
+            "type": "string"
+          },
+          "UpdatedDateUTC": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "IsReconciled": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountRef": {
+        "type": "object",
+        "properties": {
+          "AccountID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Code": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          }
+        }
+      },
+      "ContactRef": {
+        "type": "object",
+        "properties": {
+          "ContactID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactNumber": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "ContactStatus": {
+            "type": "string"
+          },
+          "EmailAddress": {
+            "type": "string"
+          },
+          "BankAccountDetails": {
+            "type": "string"
+          },
+          "Addresses": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "Phones": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "UpdatedDateUTC": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ContactGroups": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "DefaultCurrency": {
+            "type": "string"
+          },
+          "ContactPersons": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "HasValidationErrors": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PaymentRef": {
+        "type": "object",
+        "properties": {
+          "PaymentID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "Date": {
+            "type": "string",
+            "format": "date"
+          },
+          "Amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "CurrencyRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "HasAccount": {
+            "type": "boolean"
+          },
+          "HasValidationErrors": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AttachmentRef": {
+        "type": "object",
+        "properties": {
+          "AttachmentID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "FileName": {
+            "type": "string"
+          },
+          "Url": {
+            "type": "string"
+          },
+          "MimeType": {
+            "type": "string"
+          },
+          "ContentLength": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
