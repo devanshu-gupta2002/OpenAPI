@@ -1,0 +1,861 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Xero Accounting API - Accounts",
+    "version": "1.0.0",
+    "description": "Xero Accounting API endpoints for managing accounts",
+    "contact": {
+      "name": "Xero Platform Team",
+      "email": "api@xero.com",
+      "url": "https://developer.xero.com"
+    },
+    "termsOfService": "https://developer.xero.com/xero-developer-platform-terms-conditions/"
+  },
+  "servers": [
+    {
+      "url": "https://api.xero.com/api.xro/2.0",
+      "description": "Xero Accounting API"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/Accounts": {
+      "get": {
+        "tags": ["Accounting"],
+        "summary": "Retrieves the full chart of accounts",
+        "operationId": "getAccounts",
+        "security": [
+          {
+            "OAuth2": ["accounting.settings", "accounting.settings.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/ifModifiedSince"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "description": "Filter by an any element",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order by an any element",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Accounts array with 0 to n Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Accounting"],
+        "summary": "Creates a new chart of accounts",
+        "operationId": "createAccount",
+        "security": [
+          {
+            "OAuth2": ["accounting.settings"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Account object in body of request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - created new Account and return response of type Accounts array with new Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Accounts/{AccountID}": {
+      "get": {
+        "tags": ["Accounting"],
+        "summary": "Retrieves a single chart of accounts by using a unique account Id",
+        "operationId": "getAccount",
+        "security": [
+          {
+            "OAuth2": ["accounting.settings", "accounting.settings.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Accounts array with one Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Accounting"],
+        "summary": "Updates a chart of accounts",
+        "operationId": "updateAccount",
+        "security": [
+          {
+            "OAuth2": ["accounting.settings"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Request of type Accounts array with one Account",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Accounts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - update existing Account and return response of type Accounts array with updated Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Accounting"],
+        "summary": "Deletes a chart of accounts",
+        "operationId": "deleteAccount",
+        "security": [
+          {
+            "OAuth2": ["accounting.settings"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - delete existing Account and return response of type Accounts array with deleted Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Accounts/{AccountID}/Attachments": {
+      "get": {
+        "tags": ["Accounting"],
+        "summary": "Retrieves attachments for a specific accounts by using a unique account Id",
+        "operationId": "getAccountAttachments",
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array of Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Accounts/{AccountID}/Attachments/{AttachmentID}": {
+      "get": {
+        "tags": ["Accounting"],
+        "summary": "Retrieves a specific attachment from a specific account using a unique attachment Id",
+        "operationId": "getAccountAttachmentById",
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          },
+          {
+            "$ref": "#/components/parameters/AttachmentID"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Account as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Accounts/{AccountID}/Attachments/{FileName}": {
+      "get": {
+        "tags": ["Accounting"],
+        "summary": "Retrieves an attachment for a specific account by filename",
+        "operationId": "getAccountAttachmentByFileName",
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments", "accounting.attachments.read"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/ContentType"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - return response of attachment for Account as binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Accounting"],
+        "summary": "Updates attachment on a specific account by filename",
+        "operationId": "updateAccountAttachmentByFileName",
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array of Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error - some data was incorrect returns response of type Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Accounting"],
+        "summary": "Creates an attachment on a specific account",
+        "operationId": "createAccountAttachmentByFileName",
+        "security": [
+          {
+            "OAuth2": ["accounting.attachments"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requiredHeader"
+          },
+          {
+            "$ref": "#/components/parameters/AccountID"
+          },
+          {
+            "$ref": "#/components/parameters/FileName"
+          },
+          {
+            "$ref": "#/components/parameters/idempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Byte array of file in body of request",
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success - return response of type Attachments array of Attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A failed request due to validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "OAuth2 security scheme",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.xero.com/identity/connect/authorize",
+            "tokenUrl": "https://identity.xero.com/connect/token",
+            "scopes": {
+              "accounting.settings": "Grant read-write access to organisation and account settings",
+              "accounting.settings.read": "Grant read-only access to organisation and account settings",
+              "accounting.attachments": "Grant read-write access to attachments",
+              "accounting.attachments.read": "Grant read-only access to attachments"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "requiredHeader": {
+        "in": "header",
+        "name": "xero-tenant-id",
+        "description": "Xero identifier for Tenant",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ifModifiedSince": {
+        "in": "header",
+        "name": "If-Modified-Since",
+        "description": "Only records created or modified since this timestamp will be returned",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "idempotencyKey": {
+        "in": "header",
+        "name": "Idempotency-Key",
+        "description": "This allows you to safely retry requests without the risk of duplicate processing. 128 character max.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "AccountID": {
+        "in": "path",
+        "name": "AccountID",
+        "description": "Unique identifier for Account object",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "AttachmentID": {
+        "in": "path",
+        "name": "AttachmentID",
+        "description": "Unique identifier for Attachment object",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "ContentType": {
+        "in": "header",
+        "name": "contentType",
+        "description": "The mime type of the attachment file you are retrieving i.e image/jpg, application/pdf",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FileName": {
+        "in": "path",
+        "name": "FileName",
+        "description": "Name of the attachment",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Accounts": {
+        "type": "object",
+        "properties": {
+          "Accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Account"
+            }
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "Code": {
+            "description": "Customer defined alpha numeric account code e.g 200 or SALES (max length = 10)",
+            "type": "string"
+          },
+          "Name": {
+            "description": "Name of account (max length = 150)",
+            "maxLength": 150,
+            "type": "string"
+          },
+          "AccountID": {
+            "description": "The Xero identifier for an account – specified as a string following the endpoint name e.g. /297c2dc5-cc47-4afd-8ec8-74990b8761e9",
+            "type": "string",
+            "format": "uuid"
+          },
+          "Type": {
+            "$ref": "#/components/schemas/AccountType"
+          },
+          "BankAccountNumber": {
+            "description": "For bank accounts only (Account Type BANK)",
+            "type": "string"
+          },
+          "Status": {
+            "description": "Accounts with a status of ACTIVE can be updated to ARCHIVED. See Account Status Codes",
+            "type": "string",
+            "enum": ["ACTIVE", "ARCHIVED", "DELETED"]
+          },
+          "Description": {
+            "description": "Description of the Account. Valid for all types of accounts except bank accounts (max length = 4000)",
+            "type": "string"
+          },
+          "BankAccountType": {
+            "description": "For bank accounts only. See Bank Account types",
+            "type": "string",
+            "enum": ["BANK", "CREDITCARD", "PAYPAL", "NONE", ""]
+          },
+          "CurrencyCode": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "TaxType": {
+            "description": "The tax type from taxRates",
+            "type": "string"
+          },
+          "EnablePaymentsToAccount": {
+            "description": "Boolean – describes whether account can have payments applied to it",
+            "type": "boolean"
+          },
+          "ShowInExpenseClaims": {
+            "description": "Boolean – describes whether account code is available for use with expense claims",
+            "type": "boolean"
+          },
+          "Class": {
+            "description": "See Account Class Types",
+            "readOnly": true,
+            "type": "string",
+            "enum": ["ASSET", "EQUITY", "EXPENSE", "LIABILITY", "REVENUE"]
+          },
+          "SystemAccount": {
+            "description": "If this is a system account then this element is returned. See System Account types. Note that non-system accounts may have this element set as either \"\" or null.",
+            "readOnly": true,
+            "type": "string",
+            "enum": [
+              "DEBTORS",
+              "CREDITORS",
+              "BANKCURRENCYGAIN",
+              "GST",
+              "GSTONIMPORTS",
+              "HISTORICAL",
+              "REALISEDCURRENCYGAIN",
+              "RETAINEDEARNINGS",
+              "ROUNDING",
+              "TRACKINGTRANSFERS",
+              "UNPAIDEXPCLM",
+              "UNREALISEDCURRENCYGAIN",
+              "WAGEPAYABLES",
+              "CISASSETS",
+              "CISASSET",
+              "CISLABOUR",
+              "CISLABOUREXPENSE",
+              "CISLABOURINCOME",
+              "CISLIABILITY",
+              "CISMATERIALS",
+              ""
+            ]
+          },
+          "ReportingCode": {
+            "description": "Shown if set",
+            "type": "string"
+          },
+          "ReportingCodeName": {
+            "description": "Shown if set",
+            "readOnly": true,
+            "type": "string"
+          },
+          "HasAttachments": {
+            "description": "boolean to indicate if an account has an attachment (read only)",
+            "readOnly": true,
+            "type": "boolean",
+            "default": false
+          },
+          "UpdatedDateUTC": {
+            "description": "Last modified date UTC format",
+            "type": "string",
+            "readOnly": true
+          },
+          "AddToWatchlist": {
+            "description": "Boolean – describes whether the account is shown in the watchlist widget on the dashboard",
+            "type": "boolean"
+          },
+          "ValidationErrors": {
+            "description": "Displays array of validation error messages from the API",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "AccountType": {
+        "description": "See Account Types",
+        "type": "string",
+        "enum": [
+          "BANK",
+          "CURRENT",
+          "CURRLIAB",
+          "DEPRECIATN",
+          "DIRECTCOSTS",
+          "EQUITY",
+          "EXPENSE",
+          "FIXED",
+          "INVENTORY",
+          "LIABILITY",
+          "NONCURRENT",
+          "OTHERINCOME",
+          "OVERHEADS",
+          "PREPAYMENT",
+          "REVENUE",
+          "SALES",
+          "TERMLIAB",
+          "PAYG"
+        ]
+      },
+      "Attachments": {
+        "type": "object",
+        "properties": {
+          "Attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          }
+        }
+      },
+      "Attachment": {
+        "type": "object",
+        "properties": {
+          "AttachmentID": {
+            "description": "Unique ID for the file",
+            "type": "string",
+            "format": "uuid"
+          },
+          "FileName": {
+            "description": "Name of the file",
+            "type": "string"
+          },
+          "Url": {
+            "description": "URL to the file on xero.com",
+            "type": "string"
+          },
+          "MimeType": {
+            "description": "Type of file",
+            "type": "string"
+          },
+          "ContentLength": {
+            "description": "Length of the file content",
+            "type": "integer"
+          },
+          "IncludeOnline": {
+            "description": "Include the file with the online invoice",
+            "type": "boolean"
+          }
+        }
+      },
+      "CurrencyCode": {
+        "description": "3 letter alpha code for the currency – see list of currency codes",
+        "type": "string",
+        "enum": [
+          "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+          "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+          "BSD", "BTN", "BWP", "BYN", "BYR", "BZD", "CAD", "CDF", "CHF", "CLF",
+          "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK",
+          "DOP", "DZD", "EEK", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP",
+          "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK",
+          "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD",
+          "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT",
+          "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL",
+          "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MRU", "MUR", "MVR", "MWK",
+          "MXN", "MXV", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD",
+          "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON",
+          "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP",
+          "SKK", "SLE", "SLL", "SOS", "SRD", "STD", "STN", "SVC", "SYP", "SZL",
+          "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH",
+          "UGX", "USD", "UYU", "UZS", "VEF", "VES", "VND", "VUV", "WST", "XAF",
+          "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZMK", "ZWD"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ErrorNumber": {
+            "description": "Exception number",
+            "type": "integer"
+          },
+          "Type": {
+            "description": "Exception type",
+            "type": "string"
+          },
+          "Message": {
+            "description": "Exception message",
+            "type": "string"
+          },
+          "Elements": {
+            "description": "Array of Elements of validation Errors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          }
+        }
+      },
+      "Element": {
+        "type": "object",
+        "properties": {
+          "ValidationErrors": {
+            "description": "Array of Validation Error message",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          },
+          "BatchPaymentID": {
+            "description": "Unique ID for batch payment object with validation error",
+            "type": "string",
+            "format": "uuid"
+          },
+          "BankTransactionID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "CreditNoteID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ContactID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "InvoiceID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ItemID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "PurchaseOrderID": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "Message": {
+            "description": "Validation error message",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
