@@ -1878,10 +1878,7 @@
           "rows": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": {
-                "$ref": "#/components/schemas/LayoutSection"
-              }
+              "type": "object"
             }
           },
           "rowMetaData": {
@@ -1893,7 +1890,7 @@
           "cells": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LayoutSection"
+              "type": "object"
             }
           },
           "cssClass": {
